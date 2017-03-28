@@ -20,108 +20,122 @@
   </section>
 
   <section class="main-content">
-    <h1>
-      <a id="lighthouse" class="anchor" href="#lighthouse" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Lighthouse</h1>
+
+    <h2>
+      <a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Lighthouse?</h2>
+
+      <p>Lighthouse is a Google Chrome browser extension. It is designed to augment the functionality provided by Beacon. It streamlines some common workflows, such as closing a job or tasking a job to a team, or sending a message. Lighthouse also provides customised displays for use on large screens in an Operations Room.</p>
+
+      <p><b>Lighthouse is designed, written and supported by voulenteers of the NSW SES. All its features are driven by feedback from beacon users from all areas of emergency management.
+      </b></p>
 
 
       <h2>
-        <a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Requirements</h2>
+        <a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What do I need to use it?</h2>
 
         <ul>
-          <li><a href="https://www.google.com/chrome/browser/desktop/index.html" title="Download Google Chrome">Google Chrome Browser</a></li>
-          <li>NSW SES Beacon Account</li>
+          <li><a href="https://www.google.com/chrome/browser/desktop/index.html" title="Download Google Chrome">Google Chrome Browser</a> - Lighthouse only works with Chrome</li>
+          <li>NSW SES Beacon Account - Lighthouse only works if you have beacon access</li>
         </ul>
 
         <h2>
-          <a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Purpose</h2>
+          <a id="operation" class="anchor" href="#operation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it work?</h2>
 
-          <p>Lighthouse is intended to augment the functionality provided by Beacon. It streamlines some common workflows, such as closing a job or tasking a job to a team, it also provides customised displays for use on screens in an Operations Room.</p>
+          <p>Lighthouse is completely client-side (runs on your computer). It stores no user data and runs completely within the Chrome web browser. It is bound by existing Beacon management systems, such as user permissions, security checks and logging of actions within Beacon for auditing purposes.</p>
 
-          <p>Lighthouse also provides an opportunity to test functionality or fixes before those changes are put to the Beacon development team for incorporation into the core system.</p>
+          <p>Lighthouse simply interfaces with the same information and functionality as normal Beacon, just in a different (and hopefully more effective and efficient) way.</p>
 
           <h2>
-            <a id="operation" class="anchor" href="#operation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Operation</h2>
+            <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-            <p>Lighthouse is completely client-side. It stores no user data and runs completely within the Chrome web browser. It is bound by existing Beacon management systems, such as user permissions, security checks and logging of actions within Beacon for auditing purposes.</p>
+            <p>A ready to use version of the Lighthouse extension is available through the <a href="https://chrome.google.com/webstore/detail/lighthouse/eheijalihofgiaoeanmnjceefmcpajnb" title="Lighthouse in the Google Chrome Store">Google Chrome Store</a>.</p>
 
-            <p>Lighthouse simply interfaces with the same information and functionality as normal Beacon, just in a different (and hopefully more effective and efficient) way.</p>
+            <p>This version is rigorously tested and suitable for use on operational computers. It is not updated as quickly as the Developement version but should be more reliable and stable.</p>
+
+            <p>A developer preview version of the Lighthouse system is available through the <a href="https://chrome.google.com/webstore/detail/lighthouse-development-pr/jcmiinngebdojjbcjlpjpdhiankmjbda" title="Lighthouse Development Preview in the Google Chrome Store">Google Chrome Store</a>.</p>
+
+            <p>This version is updated regularly when minor changes are released, and/or there is something in the pipeline that we want to test on a wider audience.</p>
+
 
             <h2>
-              <a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+              <a id="changes" class="anchor" href="#changes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features & Changes</h2>
 
-              <p>A compiled stable version of the Lighthouse system is available through the <a href="https://chrome.google.com/webstore/detail/lighthouse/eheijalihofgiaoeanmnjceefmcpajnb" title="Lighthouse in the Google Chrome Store">Google Chrome Store</a>.</p>
+              <p style="text-align: center;"><img style="width:20%;display:block;margin:auto" src='images/lh-black.png'><br>Look for this logo. It indicates a lighthouse added feature.</p>
 
-              <p>This version is updated when major changes are committed through the GitHub repository, and/or it is convenient ans safe to distribute an updated version.</p>
+              <h3>
+                <a id="Jobs & Teams" class="anchor" href="#jobs-teams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Jobs & Teams:</h3>
 
-              <p>A compiled developer version of the Lighthouse system is available through the <a href="https://chrome.google.com/webstore/detail/lighthouse-development-pr/jcmiinngebdojjbcjlpjpdhiankmjbda" title="Lighthouse Development Preview in the Google Chrome Store">Google Chrome Store</a>.</p>
-
-              <p>This version is updated when minor changes are committed through the GitHub repository, and/or there is something in the pipeline that we want to test on a wider audience.</p>
-
-
-              <h2>
-                <a id="changes" class="anchor" href="#changes" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features & Changes</h2>
+                <ul>
+                  <li>Asbestos Register - Automatic searching of the Fairtrade Asbestos register.</li>
+                  <li>Address history - Display other jobs with same address.</li>
+                  <li>Quick task - Click to show all active teams and click to task without leaving the page. Includes a quick filter to search the teams list.</li>
+                  <li>Map overlays - Prevent theft of the mouse when scrolling past the map.</li>
+                  <li>Team notes - Clearer display of completion notes and click to hide team notes</li>
+                  <li>Quick text - Clickable presets for common job actions and events on team & job sellection.</li>
+                  <li>Fixed message line breaks - Instead of showing <code>&lt;br&gt;</code> an actual line break is inserted into the message correctly.</li>
+                  <li>Page titles - Changes page title to job number when viewing a job.</li>
+                  <li>Page titles - Change page title to team name when viewing a team.</li>
+                </ul>
 
                 <h3>
-                  <a id="in-development" class="anchor" href="#in-development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>In development:</h3>
+                  <a id="Messaging" class="anchor" href="#job-screens" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Messaging:</h3>
 
                   <ul>
-                    <li>Address history - display other jobs with same address.</li>
-                    <li>NITC exports.</li>
+                    <li>Prefill - Automatically selects users home head quarters on the "Send Message" screen.</li>
+                    <li>Team Messages - Displays active teams at the selected location and click to send a beacon message.</li>
+                    <li>Message collections - Save a group of recipients for quick messaging later.</li>
                   </ul>
 
                   <h3>
-                    <a id="tested" class="anchor" href="#tested" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tested:</h3>
+                    <a id="Dashboards" class="anchor" href="#Dashboards" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dashboards:</h3>
 
                     <ul>
-                      <li>Map overlay to prevent theft of mouse when scrolling.</li>
-                      <li>Quick Filters. Allows for fast access to complex filter groups when searching. eg, "All Open Jobs" selects all the job tags that mean open (New,Ack, Tasked, Refered)</li>
-                      <li>Idle session detection with popup to warn user.</li>
-                      <li>Time picker options of 'this year' and 'all time' added.</li>
-                      <li>Team summary screen.</li>
-                      <li>Change page title to job number when viewing a job.</li>
-                      <li>Change page title to team name when viewing a team.</li>
-                      <li>Fixed missing favicon on the login page.</li>
-                      <li>Fixed missing page title on the login page.</li>
-                      <li>Hide maximise  button on popup on situational awareness map.</li>
-                      <li>Job summary and statistics page that feeds directly from beacon filters.</li>
-                      <li>Quick Text on team completion and job finalisation.</li>
-                      <li>Quick Task on team completion.</li>
-                      <li>Fixed message line breaks. Instead of showing <code>&lt;br&gt;</code> an actual line break is inserted into the message correctly.</li>
-                      <li>Added more pagination choices to tasking and job list.</li>
-                      <li>Christmas theme :p</li>
+                      <li>Job summary screen - A live dashboard to display Job numbers and status.</li>
+                      <li>Job statistics page - A live and interactive dashboard for job statistics.</li>
+                      <li>Team summary screen - A live dashboard showing team numbers, team members, tasking and last updates.</li>
                     </ul>
 
                     <h3>
-                      <a id="tested" class="anchor" href="#limitations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Known Limitations:</h3>
+                      <a id="Registers" class="anchor" href="#tested" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tested:</h3>
+
                       <ul>
-                        <li>All summary, statistics and export screens will only follow HQ and time/date filters, eg if you filter by job type then generate a summary it will be everything not just that job type.</li>
-                        <li>Lighthouse menu - If you are a region user it will only show your region, not all units within your region. You need to generate this screens from the Job Register to get around this.</li>
+                        <li>Quick Filters - Allows for fast access to complex filter groups on the job and team registers. eg, "All Outstanding Jobs" selects all the job tags that mean a job is outstanding (New, Ack, Tasked, Refered).</li>
+                        <li>NITC exports - Export NITC events to CSV.</li>
+                        <li>Extra time options - Time picker options of 'this year' and 'all time' added.</li>
+                        <li>Advanced job export - Export jobs to CSV with lots of selectable options.</li>
+                        <li>Pagination - Allows you to select a bigger result number to tasking and job list.</li>
                       </ul>
 
 
-                      <h2>
-                        <a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Development</h2>
+                        <h2>
+                          <a id="development" class="anchor" href="#development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How can I help develop Lighthouse?</h2>
 
-                        <p>Install:</p>
+                          <p>We are always looking for help with coding (Javascript, HTML and CSS), Graphic design, Documentation writing,  and feature testing. If you are interestest in helping please reach out to us and we will gladly show you how</p>
 
-                        <ul>
-                          <li>NodeJS and npm</li>
-                          <li>Gulp (<code>npm install -g gulp-cli</code>)</li>
-                        </ul>
+                          <p>All the Lighthouse code is hosted in github and available for anyone to download and develop</p>
 
-                        <p>Build:
-                          Run <code>npm install</code> in the root of this repository. You then should be able to run <code>gulp</code>. The extension will be built into <code>build</code> and bundled into <code>dist</code>. Load the <code>build</code> directory as an unpacked Chrome extension and then execute <code>gulp watch</code> while developing to have gulp automatically rebuild JS/JSX as you edit the files.</p>
+                          <p>Visit The <a href="https://github.com/NSWSESMembers/Lighthouse" title="Lighthouse">Github Repo</a> to download the source code</p>
 
-                          <p>Pull requests are welcome!</p>
+                          <p>Install:</p>
 
-                          <footer class="site-footer">
-                            <span class="site-footer-owner"><a href="https://github.com/NSWSESMembers/Lighthouse">Lighthouse</a> is maintained by <a href="https://github.com/NSWSESMembers">NSWSESMembers</a>.</span>
+                          <ul>
+                            <li>NodeJS and npm</li>
+                            <li>Gulp (<code>npm install -g gulp-cli</code>)</li>
+                          </ul>
 
-                            <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-                          </footer>
+                          <p>Build:
+                            Run <code>npm install</code> in the root of this repository. You then should be able to run <code>gulp</code>. The extension will be built into <code>build</code> and bundled into <code>dist</code>. Load the <code>build</code> directory as an unpacked Chrome extension and then execute <code>gulp watch</code> while developing to have gulp automatically rebuild JS/JSX as you edit the files.</p>
 
-                        </section>
+                            <p>Pull requests are welcome!</p>
+
+                            <footer class="site-footer">
+                              <span class="site-footer-owner"><a href="https://github.com/NSWSESMembers/Lighthouse">Lighthouse</a> is maintained by <a href="https://github.com/NSWSESMembers">NSWSESMembers</a>.</span>
+
+                              <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+                            </footer>
+
+                          </section>
 
 
-                      </body>
-                      </html>
+                        </body>
+                        </html>
