@@ -243,3 +243,11 @@ a {
 @media screen and (max-width: 42em) {
   .site-footer {
     font-size: 0.9rem; } }
+    
+    
+    .lb-image {
+    width: 10rem;
+    border:1px solid #021a40;
+    padding:2px;
+    border-radius: 4px;
+}
