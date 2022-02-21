@@ -28,23 +28,55 @@
     <h2><a id="whatsnew" class="anchor" href="#new" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Whats New!</h2>
     <h5>February 2022</h5>
       <p>Asset Locations!</p>
-      <p>Asset locations has gone live this month with all vehicle assets now trackable and displayed in Beacon. Lighthouse is using this location data to draw maps that show the nearest 5 assets to the job.</p>
-      <p>Two map modes are availabile; one called "Active Only" which will only show assets that have updated within the last hour and the other "All" will show all assets and LHQ's regardless of update time.</p>
+      <p>Asset locations has gone live this month with all vehicle assets now trackable and displayed in Beacon. Lighthouse is using this location data to draw maps that show the nearest assets to the job.</p>
+      <h2>New Asset Location UI</h2>
+      <p>The panel has been rewritten in this release to remove some clutter and make it more user friendly.</p>
+      <p>The key points:</p>
+      <ul>
+        <li><b>Callsign</b> - Hover over the black callsign to see a description of the asset including class and owner</li>
+        <li><b>Locate</b> - This gem indicates the assets marker color on the map and clicking the gem will zoom the map on the asset. The color is unique but means nothing. its simply a visual aid</li>
+        <li><b>Owner</b> - What unit/zone owns the asset</li>
+        <li><b>Abs Distance & Bearing</b> - The crow flies distance and bearing between the asset and the job</li>
+        <li><b>Talkgroup</b> - The talkgroup that the asset is tunned into on the radio</li>
+        <li><b>Last Updated</b> - How long ago the asset reported its current location (happens every 2 minutes when the radio is powered on)</li>
+    </ul>
+    <img src="images/overview.gif"></img>
+    <p><h2>Re-routing</h2></p>
+    <p>Once a driving route is drawn the path can be moved and the path will recalculate. This will allow you to take into concideration any local road conditions/closures etc. To remove the new path unselect and reselect the asset and the fastest path will be redrawn.</p>
+    <img src="images/reroute.gif"></img>
+      <hr>
+      <h2>Map Modes</h2>
+      <p>Three map modes are availabile:</p>
+      <ul>
+        <li><b>All</b></li>
+        <li><b>Active Only</b></li>
+        <li><b>Filtered Only</b></li>
+    </ul>
 
-      <div align="center">
-        <a class="example-image-link" href="images/assetLocationCrow.png" data-lightbox="example-1" data-title="Asset Locations"><img class="lb-image-lrg" src="images/assetLocationCrow.png" alt="image-1"></a>
-        <a class="example-image-link" href="images/assetLocation.png" data-lightbox="example-1" data-title="Asset Locations"><img class="lb-image-lrg" src="images/assetLocation.png" alt="image-1"></a>
-      </div>
 
+      <p><h3>All</h3></p>
+      <p>Shows the nearest 5 assets regardless of if they are active (have updated within the last hour) or not. Doesnt limit to unit or vehicle type. Will also show nearest units that can be hovered over to see contact details.</p>
+
+      <p><h3>Active Only</h3></p>
+      <p>Shows only the nearest 5 assets that <b>have</b> updated within the last hour. Doesnt limit to unit or vehicle type.</p>
+
+      <p><h3>Filtered Only</h3></p>
+      <p>Allows you to select which assets to show. Will allow any number of assets to be selected and will map them all at once. The filtered selection will be saved between page loads and between becon users sharing the same computer.</p>
+
+<p><i><br>If you are sitting in an Tasking role and responsible for a specific function or group of vehicles this would be best done via the Filter Only view and select the assets you care about</i></p>
+<br>
+<hr>
+<br>
       <p>Hovering over map icons or results will show crow flies distances, clicking will show driven paths that calculate distance and travel time. <b>These times dont take into account traffic or road conditions.</b></p>
       <br>
+            <hr>
       <b><i>Until the SES privacy and surveillance policies are updated, beacon and lighthouse cannot tie vehicle assets to teams or people. So we cant show tasking, capabilities or team.</i></b>
 
-      <hr>
-  
+
+
 
       </section>
-      <hr>
+
       <h2>
         <a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Lighthouse?</h2>
 
