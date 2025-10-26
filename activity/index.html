@@ -1,30 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Lighthouse – Member Activity</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-  <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta charset="utf-8" />
+  <title>Member Activity (CSV → XLSX)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    .dropzone {
+      border: 2px dashed #888; border-radius: 8px; padding: 30px; text-align: center; color: #555;
+    }
+    .dropzone.dragover { border-color: #2c7; background: #f4fff7; }
+    .controls { margin: 16px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    progress { width: 360px; height: 16px; }
+    .log { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+           white-space: pre-wrap; background: #f7f7f9; border: 1px solid #eee; padding: 10px; border-radius: 6px; max-height: 240px; overflow: auto; }
+    .hint { color: #666; font-size: 12px; }
+    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eef; color: #224; font-size: 12px; }
+    button { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; background: #fafafa; cursor: pointer; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .stat { margin-right: 12px; }
+    .banner {
+  border: 1px solid #d9e0e6;
+  background: #f7fbff;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+}
+.banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+.banner ol {
+  margin: 8px 0 12px 18px;
+  padding-left: 14px;
+}
+.banner-shot {
+  border: 1px dashed #aac8e6;
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+.banner-shot img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+  </style>
 </head>
-
 <body>
-  <section class="page-header">
-    <img src="images/lighthouse128.png">
-    <h1 class="project-name">Lighthouse</h1>
-    <h2 class="project-tagline">Member Activity Report (CSV → XLSX)</h2>
-    <a href="index.html" class="btn">Back to Home</a>
-  </section>
 
-  <section class="main-content">
-    
+ 
+
   <h1>Member Activity (CSV → XLSX)</h1>
 
   <div class="dropzone" id="dropzone">
@@ -46,6 +78,21 @@
 </div>
 
 <pre class="log" id="log"></pre>
+
+ <div class="banner" id="helpBanner">
+  <h2>Download a “Member Activity” CSV from Beacon, then upload it here</h2>
+  <ol>
+    <li>In Beacon, run the <strong>Member Activity</strong> report for the date range you want.</li>
+    <li>Click <strong>Export</strong> → <strong>CSV</strong>.</li>
+    <li>Drag &amp; drop the CSV into this page (or use the file picker).</li>
+  </ol>
+
+  <div class="banner-shot">
+    <img src="beacon.png" alt="Where to download the Member Activity report in Beacon"
+         onerror="this.closest('.banner-shot').style.display='none'">
+  </div>
+</div>
+
 
   <script>
     // ---- helpers ----
@@ -567,10 +614,5 @@ processBtn.addEventListener('click', async () => {
 });
 
   </script>
-  </section>
-
-  <footer class="site-footer">
-    <span class="site-footer-owner"><a href="https://github.com/NSWSESMembers/Lighthouse">Lighthouse</a> is maintained by <a href="https://github.com/NSWSESMembers">NSWSESMembers</a>.</span>
-  </footer>
 </body>
 </html>
