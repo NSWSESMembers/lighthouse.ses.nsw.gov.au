@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lighthouse – Member Activity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+</head>
+
+<body>
+  <section class="page-header">
+    <img src="images/lighthouse128.png">
+    <h1 class="project-name">Lighthouse</h1>
+    <h2 class="project-tagline">Member Activity Report (CSV → XLSX)</h2>
+    <a href="index.html" class="btn">Back to Home</a>
+  </section>
+
+  <section class="main-content">
+    
+  <h1>Member Activity (CSV → XLSX)</h1>
+
+  <div class="dropzone" id="dropzone">
+    <div><strong>Drop CSV here</strong> or choose a file…</div>
+    <div class="hint">Expected columns: Member Code, FirstName, LastName, Time On, Incident Number</div>
+    <div style="margin-top:10px;">
+      <input type="file" id="fileInput" accept=".csv" />
+    </div>
+  </div>
+
+<div class="controls">
+  <button id="processBtn" disabled>Process CSV</button>
+  <span class="pill" id="statusPill">Idle</span>
+</div>
+
+<div class="controls">
+  <progress id="validateProgress" value="0" max="100" style="width:300px"></progress>
+  <span id="progressLabel">0 / 0</span>
+</div>
+
+<pre class="log" id="log"></pre>
+
+  <script>
+    // ---- helpers ----
+
+    function log(msg) {
+      logEl.textContent += (msg + "\\n");
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+    function setStatus(text) {
+      document.getElementById('statusPill').textContent = text;
+    }
+    function trimQuotesAndWs(s) {
+      if (typeof s !== 'string') return s;
+      return s.trim().replace(/^"+|"+$/g, '');
+    }
+function parseDateSafe(s) {
+  if (!s) return null;
+  // Common Australian 12-hour and 24-hour formats
+  const aus = moment(s, [
+    "D/M/YYYY h:mm:ss A",
+    "D/M/YYYY h:mm A",
+    "DD/MM/YYYY h:mm:ss A",
+    "DD/MM/YYYY h:mm A",
+    "D/M/YYYY H:mm:ss",
+    "D/M/YYYY H:mm",
+    "DD/MM/YYYY H:mm:ss",
+    "DD/MM/YYYY H:mm",
+    "D-M-YYYY h:mm:ss A",
+    "D-M-YYYY h:mm A",
+    "DD-MM-YYYY h:mm:ss A",
+    "DD-MM-YYYY h:mm A"
+  ], true);
+  if (aus.isValid()) return aus.toDate();
+
+  // fallback to ISO or anything Moment can detect
+  const m = moment(s);
+  return m.isValid() ? m.toDate() : null;
+}
+
+    // Resolve common column names
+    function resolveColumns(sampleRow) {
+      // candidates for columns
+      const map = {};
+      const keys = Object.keys(sampleRow || {}).map(k => k.trim());
+
+      function pick(cands, fallback) {
+        for (const c of cands) {
+          const hit = keys.find(k => k.toLowerCase() === c.toLowerCase());
+          if (hit) return hit;
+        }
+        // allow partial contains (e.g., "Member Code (ID)")
+        for (const c of cands) {
+          const hit = keys.find(k => k.toLowerCase().includes(c.toLowerCase()));
+          if (hit) return hit;
+        }
+        return fallback || null;
+      }
+
+      map.memberId = pick(['Member Code','MemberID','registrationNumber','Member Id','Member'], null);
+      map.firstName = pick(['FirstName','First Name','Given Name'], null);
+      map.lastName  = pick(['LastName','Last Name','Surname','Family Name'], null);
+      map.timeOn    = pick(['Time On','Start','Start Time','Activity Time','TimeOn'], null);
+      map.incident  = pick(['Incident Number','IncidentNumber','Incident','Event','Operational?'], null);
+
+      return map;
+    }
+
+    function computeMonthsRange(rows, colTime) {
+      const dates = rows
+        .map(r => parseDateSafe(r[colTime]))
+        .filter(d => d !== null)
+        .sort((a,b) => a - b);
+
+      if (!dates.length) return [];
+
+      const start = moment(dates[0]).startOf('month');
+      const end   = moment(dates[dates.length - 1]).startOf('month');
+      const months = [];
+      let cur = start.clone();
+      while (cur.isSameOrBefore(end)) {
+        months.push(cur.format('YYYY-MM'));
+        cur.add(1, 'month');
+      }
+      // Always include current month if wanted; here we keep CSV-derived range as requested.
+      return months.reverse(); // newest first like original code
+    }
+
+    async function validateMembersOnce(ids, onProgress) {
+      const results = new Map(); // id -> {ok:boolean, status:number}
+      const unique = Array.from(new Set(ids.filter(x => x)));
+
+      let done = 0;
+      const total = unique.length;
+
+      // modest concurrency
+      const concurrency = 8;
+      let idx = 0;
+
+      async function worker() {
+        while (idx < unique.length) {
+          const i = idx++;
+          const memberId = unique[i];
+          const url = `https://tdykes.com/ses/memberLookup.php?id=${encodeURIComponent(memberId)}`;
+          try {
+            const res = await fetch(url, { method: 'GET' });
+            results.set(memberId, { ok: res.ok, status: res.status });
+            log(`Validated ${memberId}: HTTP ${res.status}`);
+          } catch (e) {
+            results.set(memberId, { ok: false, status: 0 });
+            log(`Validated ${memberId}: network error`);
+          }
+          done++;
+          onProgress(done, total);
+        }
+      }
+
+      const workers = Array.from({length: Math.min(concurrency, unique.length)}, () => worker());
+      await Promise.all(workers);
+      return results;
+    }
+
+    function buildWorkbook(dataRows, cols, months) {
+      // byMember structure
+      const byMember = new Map();
+      const newestToOldestMonths = months; // already newest->oldest
+
+      // Prepare members from CSV rows
+      for (const row of dataRows) {
+        const idRaw = row[cols.memberId];
+        if (!idRaw) continue;
+        const memberId = trimQuotesAndWs(String(idRaw));
+
+        const fn = (cols.firstName && row[cols.firstName]) ? String(row[cols.firstName]).trim() : '';
+        const ln = (cols.lastName  && row[cols.lastName])  ? String(row[cols.lastName]).trim()  : '';
+        const name = `${fn} ${ln}`.trim();
+
+        const timeOnDate = parseDateSafe(row[cols.timeOn]);
+        if (!timeOnDate) continue;
+
+        const incidentPresent = cols.incident ? Boolean(row[cols.incident]) : false;
+
+        if (!byMember.has(memberId)) {
+          byMember.set(memberId, {
+            name,
+            memberId,
+            items: []
+          });
+        }
+        byMember.get(memberId).items.push({
+          timeOn: timeOnDate,
+          isOperational: incidentPresent
+        });
+      }
+
+      // Compute per-member metrics and month aggregations
+      const membersArray = [];
+      for (const [, m] of byMember) {
+        const items = m.items.sort((a,b) => b.timeOn - a.timeOn);
+        // last seen
+        let lastSeen = null;
+        let lastSeenReason = '';
+        if (items.length) {
+          lastSeen = items[0].timeOn;
+          // choose lastSeenReason using the most recent item
+          lastSeenReason = items[0].isOperational ? 'Operational' : 'NITC';
+        }
+
+        // average days per month based on unique active days across the months window
+        const totalMonths = newestToOldestMonths.length || 1;
+        const uniqueDays = new Set(items.map(it => moment(it.timeOn).format('YYYY-MM-DD')));
+        const avgPerMonth = (uniqueDays.size / totalMonths).toFixed(2);
+
+        const opCount = items.filter(i => i.isOperational).length;
+        const nitcCount = items.length - opCount;
+        let opNitcRatio = '';
+        if (nitcCount === 0) {
+          opNitcRatio = opCount > 0 ? '∞' : '0.00';
+        } else {
+          opNitcRatio = (opCount / nitcCount).toFixed(2);
+        }
+
+        // month buckets unique-day counting
+        const activityByMonth = {};
+        for (const mon of newestToOldestMonths) {
+          activityByMonth[mon] = { operational: 0, nitc: 0 };
+        }
+
+        const daysByMonth = new Map(); // month -> Map(day->isOperational?)
+        for (const it of items) {
+          const day = moment(it.timeOn).startOf('day').format('YYYY-MM-DD');
+          const mon = moment(it.timeOn).startOf('month').format('YYYY-MM');
+          if (!activityByMonth[mon]) continue;
+
+          if (!daysByMonth.has(mon)) daysByMonth.set(mon, new Map());
+          // prefer counting a day as operational if any item that day is operational
+          const dayMap = daysByMonth.get(mon);
+          const prev = dayMap.get(day) || false;
+          dayMap.set(day, prev || it.isOperational);
+        }
+
+        for (const [mon, dayMap] of daysByMonth) {
+          for (const [, isOp] of dayMap) {
+            if (isOp) activityByMonth[mon].operational += 1;
+            else      activityByMonth[mon].nitc += 1;
+          }
+        }
+
+        // After last active month, mark '-' like original
+        let lastActiveMonth = null;
+        for (let i = 0; i < newestToOldestMonths.length; i++) {
+          const mon = newestToOldestMonths[i];
+          if (activityByMonth[mon].operational > 0 || activityByMonth[mon].nitc > 0) {
+            lastActiveMonth = mon;
+            break; // months are newest->oldest; the first with activity is the most recent active
+          }
+        }
+        const rowObj = {
+          memberId: m.memberId,
+          name: m.name || '',
+          lastSeen: lastSeen ? moment(lastSeen).toDate() : 'Unknown',
+          lastSeenDuration: lastSeen ? moment(lastSeen).fromNow() : '',
+          lastSeenReason: lastSeen ? lastSeenReason : '',
+          averageItemsPerMonth: avgPerMonth,
+          operationalToNitcRatio: opNitcRatio
+        };
+
+        for (const mon of newestToOldestMonths) {
+          const v = activityByMonth[mon];
+          rowObj[mon] = v ? `${v.operational}|${v.nitc}` : '0|0';
+        }
+
+        // Determine first (oldest) active month and mark cells older than that as '-'
+const activeByMonth = newestToOldestMonths.map(mon => {
+  const v = activityByMonth[mon];
+  return v && (v.operational > 0 || v.nitc > 0);
+});
+
+// months[] is newest → oldest
+let firstActiveIdx = -1; // index of the oldest month that has any activity
+for (let i = activeByMonth.length - 1; i >= 0; i--) {
+  if (activeByMonth[i]) { firstActiveIdx = i; break; }
+}
+
+if (firstActiveIdx !== -1) {
+  // Mark all months OLDER than the first active as '-'
+  for (let i = firstActiveIdx + 1; i < newestToOldestMonths.length; i++) {
+    const mon = newestToOldestMonths[i];
+    rowObj[mon] = '-';
+  }
+}
+
+        membersArray.push(rowObj);
+      }
+
+      // sort by lastSeen desc, Unknown at bottom
+      membersArray.sort((a, b) => {
+        const da = (a.lastSeen instanceof Date) ? a.lastSeen.getTime() : -Infinity;
+        const db = (b.lastSeen instanceof Date) ? b.lastSeen.getTime() : -Infinity;
+        return db - da;
+      });
+
+      // Build workbook
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('All', { properties: { tabColor: { argb: '3361ff' } } });
+
+      const fixedCols = [
+        { header: 'Member ID', key: 'memberId', width: 14 },
+        { header: 'Member Name', key: 'name', width: 26 },
+        { header: 'Last Seen', key: 'lastSeen', width: 20, style: { numFmt: 'yyyy-mm-dd hh:mm' } },
+        { header: 'Last Seen Ago', key: 'lastSeenDuration', width: 18 },
+        { header: 'Last Seen Reason', key: 'lastSeenReason', width: 12 },
+        { header: 'Average Days Per Month', key: 'averageItemsPerMonth', width: 12 },
+        { header: 'Operational to NITC Ratio', key: 'operationalToNitcRatio', width: 12 }
+      ];
+
+      const monthCols = newestToOldestMonths.map(m => ({ header: m, key: m, width: 10 }));
+      ws.columns = [...fixedCols, ...monthCols];
+
+      ws.addRows(membersArray);
+
+      // header bold
+      ws.getRow(1).eachCell(c => { c.font = { bold: true }; });
+
+      // coloring for month cells
+      // fixed columns count:
+      const fixedCount = fixedCols.length; // 7
+      for (let r = 2; r <= ws.rowCount; r++) {
+        const row = ws.getRow(r);
+        for (let i = 0; i < monthCols.length; i++) {
+          const cell = row.getCell(fixedCount + 1 + i);
+          const val = String(cell.value ?? '');
+          cell.alignment = { vertical: 'middle', horizontal: 'center' };
+
+          if (val === '-') {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '000000' } };
+            cell.font = { color: { argb: 'FFFFFF' } };
+            continue;
+          }
+          if (val === '0|0') {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD7C5' } }; // light red
+            continue;
+          }
+          // any activity
+          const parts = val.split('|').map(n => parseInt(n, 10));
+          const op = parts[0] || 0, nitc = parts[1] || 0;
+          if (op > 0 || nitc > 0) {
+            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CBFFC5' } }; // light green
+          }
+        }
+      }
+
+      // autofilter across all columns
+      const lastColIdx = fixedCols.length + monthCols.length;
+      const lastColLetter = ws.getColumn(lastColIdx).letter;
+      ws.autoFilter = { from: 'A1', to: `${lastColLetter}1` };
+
+
+// --- Help sheet with merged, readable instructions ---
+const help = wb.addWorksheet('Help');
+help.properties.tabColor = { argb: 'FFB74D' };
+
+// Column widths for readability
+help.columns = [
+  { header: '', key: 'c1', width: 22 },
+  { header: '', key: 'c2', width: 80 },
+  { header: '', key: 'c3', width: 18 },
+  { header: '', key: 'c4', width: 18 },
+  { header: '', key: 'c5', width: 18 },
+  { header: '', key: 'c6', width: 18 },
+];
+
+// Title
+help.mergeCells('A1:F1');
+help.getCell('A1').value = 'How to read activity cells';
+help.getCell('A1').font = { bold: true, size: 14 };
+help.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+help.getRow(1).height = 24;
+
+// Body (merged block)
+help.mergeCells('A3:F10');
+help.getCell('A3').value =
+  [
+    'Each month column shows values in the format:  op|nitc',
+    '',
+    'Where:',
+    '  • op   = unique days in that month with at least one Operational entry',
+    '  • nitc = unique days in that month with only Non-Incident (NITC) activity',
+    '',
+    'Special values & colours:',
+    '  • "-"   → month is older than the first active month in the CSV range (cell coloured black)',
+    '  • "0|0" → no activity days recorded in that month (cell coloured light red)',
+    '  • any other "x|y" → at least one active day that month (cell coloured light green)',
+    '',
+    'Notes:',
+    '  • Month range is derived from dates present in your CSV.'
+  ].join('\n');
+help.getCell('A3').alignment = { vertical: 'top', wrapText: true };
+help.getCell('A3').font = { size: 12 };
+help.getRow(3).height = 180;
+
+// Quick legend table (merged headings)
+help.mergeCells('A12:B12'); help.getCell('A12').value = 'Legend';
+help.getCell('A12').font = { bold: true };
+help.getCell('A12').alignment = { vertical: 'middle' };
+
+help.getCell('A14').value = 'Value';
+help.getCell('B14').value = 'Meaning';
+help.getCell('A14').font = { bold: true };
+help.getCell('B14').font = { bold: true };
+
+// Rows
+help.getCell('A15').value = 'op|nitc';
+help.getCell('B15').value = 'Unique active days split by Operational (op) and NITC (nitc).';
+
+help.getCell('A16').value = '-';
+help.getCell('B16').value = 'Older than the first active month in the data range.';
+help.getCell('A16').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '000000' } };
+help.getCell('A16').font = { color: { argb: 'FFFFFF' } };
+
+help.getCell('A17').value = '0|0';
+help.getCell('B17').value = 'No activity days in this month.';
+help.getCell('A17').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD7C5' } };
+
+help.getCell('A18').value = 'x|y';
+help.getCell('B18').value = 'At least one active day in the month.';
+help.getCell('A18').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CBFFC5' } };
+
+// Borders for legend
+for (const r of [14,15,16,17,18]) {
+  for (const c of ['A','B']) {
+    help.getCell(`${c}${r}`).border = {
+      top:    { style: 'thin' },
+      left:   { style: 'thin' },
+      bottom: { style: 'thin' },
+      right:  { style: 'thin' }
+    };
+  }
+}
+
+
+
+
+
+      return wb;
+    }
+
+// ---- UI wiring ----
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const processBtn = document.getElementById('processBtn');
+const statusPill = document.getElementById('statusPill');
+const progressBar = document.getElementById('validateProgress');
+const progressLabel = document.getElementById('progressLabel');
+const logEl = document.getElementById('log');
+
+let parsedRows = null;
+let columns = null;
+let months = null;
+
+function setStatus(text) {
+  statusPill.textContent = text;
+}
+function log(msg) {
+  logEl.innerHTML += msg.replace(/\n/g, '<br>');
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function enableProcess(enable) {
+  processBtn.disabled = !enable;
+}
+
+// File parsing
+function handleFiles(files) {
+  const file = files && files[0];
+  if (!file) return;
+  logEl.innerHTML = '';
+  log(`Reading: ${file.name}\n`);
+  setStatus('Parsing CSV...');
+  Papa.parse(file, {
+    header: true,
+    dynamicTyping: false,
+    skipEmptyLines: 'greedy',
+    complete: res => {
+      parsedRows = res.data || [];
+      log(`Parsed ${parsedRows.length} rows\n`);
+      if (!parsedRows.length) { setStatus('No data'); return; }
+
+      columns = resolveColumns(parsedRows[0], parsedRows);
+      log('Detected columns:\n' + JSON.stringify(columns, null, 2) + '\n');
+      if (!columns.memberId || !columns.timeOn) {
+        log('Missing required columns: Member Code or Time On\n');
+        setStatus('Bad headers');
+        return;
+      }
+
+      months = computeMonthsRange(parsedRows, columns.timeOn);
+      log(`Months (newest→oldest): ${months.join(', ')}\n`);
+      setStatus('Ready');
+      enableProcess(true);
+    },
+    error: err => {
+      log('Parse error: ' + err.message + '\n');
+      setStatus('Parse error');
+    }
+  });
+}
+
+// Drag/drop
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+
+// Main single-button flow
+processBtn.addEventListener('click', async () => {
+  if (!parsedRows) return;
+  setStatus('Validating members...');
+  enableProcess(false);
+
+  const ids = parsedRows.map(r => trimQuotesAndWs(String(r[columns.memberId] || ''))).filter(Boolean);
+  const unique = Array.from(new Set(ids));
+  progressBar.value = 0; progressLabel.textContent = `0 / ${unique.length}`;
+  const results = new Map();
+  let done = 0;
+
+  for (const id of unique) {
+    const url = `https://tdykes.com/ses/memberLookup.php?id=${encodeURIComponent(id)}`;
+    try {
+      const res = await fetch(url);
+      results.set(id, {ok: res.ok, status: res.status});
+      log(`Validated ${id}: HTTP ${res.status}\n`);
+    } catch {
+      results.set(id, {ok: false, status: 0});
+      log(`Validated ${id}: network error\n`);
+    }
+    done++;
+    progressBar.value = (done / unique.length) * 100;
+    progressLabel.textContent = `${done} / ${unique.length}`;
+  }
+
+  const invalid = Array.from(results.entries()).filter(([_,v]) => !v.ok).map(([id]) => id);
+  if (invalid.length) log(`Invalid members: ${invalid.join(', ')}\n`);
+  else log('All members valid\n');
+
+  setStatus('Building XLSX...');
+  const wb = buildWorkbook(parsedRows, columns, months);
+  const buf = await wb.xlsx.writeBuffer();
+  const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const name = `MemberActivity_${months[months.length-1]}_to_${months[0]}.xlsx`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus('Done');
+});
+
+  </script>
+  </section>
+
+  <footer class="site-footer">
+    <span class="site-footer-owner"><a href="https://github.com/NSWSESMembers/Lighthouse">Lighthouse</a> is maintained by <a href="https://github.com/NSWSESMembers">NSWSESMembers</a>.</span>
+  </footer>
+</body>
+</html>
