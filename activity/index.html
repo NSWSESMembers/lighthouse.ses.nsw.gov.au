@@ -133,32 +133,55 @@ function parseDateSafe(s) {
 }
 
     // Resolve common column names
-    function resolveColumns(sampleRow) {
-      // candidates for columns
-      const map = {};
-      const keys = Object.keys(sampleRow || {}).map(k => k.trim());
+function resolveColumns(sampleRow, rows) {
+  const keys = Object.keys(sampleRow || {}).map(k => k.trim());
+  const lc = new Map(keys.map(k => [k.toLowerCase(), k]));
+  const alias = (...cands) => {
+    for (const c of cands) if (lc.has(c.toLowerCase())) return lc.get(c.toLowerCase());
+    for (const k of keys) for (const c of cands) if (k.toLowerCase().includes(c.toLowerCase())) return k;
+    return null;
+  };
 
-      function pick(cands, fallback) {
-        for (const c of cands) {
-          const hit = keys.find(k => k.toLowerCase() === c.toLowerCase());
-          if (hit) return hit;
-        }
-        // allow partial contains (e.g., "Member Code (ID)")
-        for (const c of cands) {
-          const hit = keys.find(k => k.toLowerCase().includes(c.toLowerCase()));
-          if (hit) return hit;
-        }
-        return fallback || null;
-      }
+  const map = {
+    memberId: alias('Member Code','MemberID','registrationNumber','Member Id','Member','MemberCode','Member Number','Registration Number'),
+    firstName: alias('FirstName','First Name','Given Name'),
+    lastName:  alias('LastName','Last Name','Surname','Family Name'),
+    timeOn:    alias('Time On','Start','Start Time','Activity Time','TimeOn','Date','Date/Time','Timestamp','Occurred On'),
+    incident:  alias('Incident Number','IncidentNumber','Incident','Event'),
+    hq:        alias('HQ','Headquarters','Unit','Home Unit','Home HQ','Home Unit Name')
+  };
 
-      map.memberId = pick(['Member Code','MemberID','registrationNumber','Member Id','Member'], null);
-      map.firstName = pick(['FirstName','First Name','Given Name'], null);
-      map.lastName  = pick(['LastName','Last Name','Surname','Family Name'], null);
-      map.timeOn    = pick(['Time On','Start','Start Time','Activity Time','TimeOn'], null);
-      map.incident  = pick(['Incident Number','IncidentNumber','Incident','Event','Operational?'], null);
-
-      return map;
+  // Fallback: infer timeOn if needed (>=20% parsable)
+  if (!map.timeOn && rows && rows.length) {
+    for (const k of keys) {
+      let hit = 0, total = Math.min(rows.length, 200);
+      for (let i = 0; i < total; i++) if (parseDateSafe(rows[i][k])) hit++;
+      if (hit / total >= 0.2) { map.timeOn = k; break; }
     }
+  }
+
+  return map;
+}
+
+function mostCommonValue(rows, col) {
+  if (!col) return null;
+  const freq = new Map();
+  for (const r of rows) {
+    const v = (r[col] ?? '').toString().trim();
+    if (!v) continue;
+    freq.set(v, (freq.get(v) || 0) + 1);
+  }
+  let best = null, bestN = -1;
+  for (const [k,n] of freq) if (n > bestN) { best = k; bestN = n; }
+  return best;
+}
+
+function normalizeMemberId(x) {
+  // Trim, strip surrounding quotes, keep as string
+  return (x ?? '').toString().trim().replace(/^"+|"+$/g, '');
+}
+
+
 
     function computeMonthsRange(rows, colTime) {
       const dates = rows
@@ -214,7 +237,11 @@ function parseDateSafe(s) {
       return results;
     }
 
-    function buildWorkbook(dataRows, cols, months) {
+    function buildWorkbook(dataRows, cols, months, opts = {}) {
+  const rosterNotInCsv = opts.rosterNotInCsv || new Set(); // API-only
+  const csvNotInRoster = opts.csvNotInRoster || new Set(); // CSV-only
+  const rosterNames    = opts.rosterNames    || new Map();  // id -> name
+
       // byMember structure
       const byMember = new Map();
       const newestToOldestMonths = months; // already newest->oldest
@@ -309,15 +336,33 @@ function parseDateSafe(s) {
             break; // months are newest->oldest; the first with activity is the most recent active
           }
         }
-        const rowObj = {
-          memberId: m.memberId,
-          name: m.name || '',
-          lastSeen: lastSeen ? moment(lastSeen).toDate() : 'Unknown',
-          lastSeenDuration: lastSeen ? moment(lastSeen).fromNow() : '',
-          lastSeenReason: lastSeen ? lastSeenReason : '',
-          averageItemsPerMonth: avgPerMonth,
-          operationalToNitcRatio: opNitcRatio
-        };
+
+        const isCsvOnly   = csvNotInRoster.has(m.memberId);   // present in CSV, missing in API -> "Not from this HQ"
+const isApiOnly   = rosterNotInCsv.has(m.memberId) && m.items.length === 0; // present in API, absent in CSV -> "Never Seen"
+
+      for (const id of rosterNotInCsv) {
+  if (!byMember.has(id)) {
+    byMember.set(id, {
+      name: rosterNames.get(id) || '',
+      memberId: id,
+      items: [] // no CSV activity
+    });
+  }
+}
+
+
+        // Build the row
+const rowObj = {
+  memberId: m.memberId,
+  name: m.name || rosterNames.get(m.memberId) || '',
+  lastSeen: isApiOnly ? 'Not seen in report'
+         : isCsvOnly ? 'Not from this HQ'
+         : (lastSeen ? moment(lastSeen).toDate() : 'Unknown'),
+  lastSeenDuration: (isApiOnly || isCsvOnly) ? '' : (lastSeen ? moment(lastSeen).fromNow() : ''),
+  lastSeenReason:   (isApiOnly || isCsvOnly) ? '' : (lastSeen ? lastSeenReason : ''),
+  averageItemsPerMonth: avgPerMonth,
+  operationalToNitcRatio: opNitcRatio
+};
 
         for (const mon of newestToOldestMonths) {
           const v = activityByMonth[mon];
@@ -346,6 +391,8 @@ if (firstActiveIdx !== -1) {
 
         membersArray.push(rowObj);
       }
+
+
 
       // sort by lastSeen desc, Unknown at bottom
       membersArray.sort((a, b) => {
@@ -572,36 +619,69 @@ fileInput.addEventListener('change', e => handleFiles(e.target.files));
 // Main single-button flow
 processBtn.addEventListener('click', async () => {
   if (!parsedRows) return;
-  setStatus('Validating members...');
-  enableProcess(false);
+// === HQ-based single lookup validation ===
+setStatus('Determining HQ…');
+const chosenHQ = mostCommonValue(parsedRows, columns.hq);
+if (!chosenHQ) {
+  log('No HQ column/value detected; cannot perform HQ-based validation.\n');
+} else {
+  log(`Using most frequent HQ: "${chosenHQ}"\n`);
+}
 
-  const ids = parsedRows.map(r => trimQuotesAndWs(String(r[columns.memberId] || ''))).filter(Boolean);
-  const unique = Array.from(new Set(ids));
-  progressBar.value = 0; progressLabel.textContent = `0 / ${unique.length}`;
-  const results = new Map();
-  let done = 0;
+setStatus('Fetching HQ members');
+progressBar.value = 0; progressLabel.textContent = '0 / 1';
 
-  for (const id of unique) {
-    const url = `https://tdykes.com/ses/memberLookup.php?id=${encodeURIComponent(id)}`;
-    try {
-      const res = await fetch(url);
-      results.set(id, {ok: res.ok, status: res.status});
-      log(`Validated ${id}: HTTP ${res.status}\n`);
-    } catch {
-      results.set(id, {ok: false, status: 0});
-      log(`Validated ${id}: network error\n`);
+let rosterIds = new Set();
+let rosterNames = new Map(); // id -> name (if available)
+
+function normalizeMemberId(x) {
+  return (x ?? '').toString().trim().replace(/^"+|"+$/g, '');
+}
+function pickName(m){
+  return (m?.displayName || [m?.firstName, m?.lastName].filter(Boolean).join(' ') || m?.name || '').toString().trim();
+}
+
+try {
+  const url = `https://tdykes.com/ses/hqLookup.php?name=${encodeURIComponent(chosenHQ || '')}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const arr = await res.json(); // array of member objects
+
+  for (const m of arr) {
+    const id =
+      normalizeMemberId(m?.registrationNumber) ||
+      normalizeMemberId(m?.memberId) ||
+      normalizeMemberId(m?.memberID) ||
+      normalizeMemberId(m?.memberCode) ||
+      normalizeMemberId(m?.code);
+    if (id) {
+      rosterIds.add(id);
+      const nm = pickName(m);
+      if (nm) rosterNames.set(id, nm);
     }
-    done++;
-    progressBar.value = (done / unique.length) * 100;
-    progressLabel.textContent = `${done} / ${unique.length}`;
   }
+  log(`HQ members loaded: ${arr.length} records; usable IDs: ${rosterIds.size}\n`);
+  progressBar.value = 100; progressLabel.textContent = '1 / 1';
+} catch (e) {
+  log(`Failed to fetch HQ members: ${e.message}\n`);
+  progressBar.value = 100; progressLabel.textContent = '1 / 1';
+}
 
-  const invalid = Array.from(results.entries()).filter(([_,v]) => !v.ok).map(([id]) => id);
-  if (invalid.length) log(`Invalid members: ${invalid.join(', ')}\n`);
-  else log('All members valid\n');
+// === Compare CSV vs Roster ===
+const csvIds = new Set(parsedRows
+  .map(r => normalizeMemberId(r[columns.memberId]))
+  .filter(Boolean)
+);
 
-  setStatus('Building XLSX...');
-  const wb = buildWorkbook(parsedRows, columns, months);
+const rosterNotInCsv = new Set([...rosterIds].filter(id => !csvIds.has(id))); // API-only -> "Never Seen"
+const csvNotInRoster = new Set([...csvIds].filter(id => !rosterIds.has(id))); // CSV-only -> "Not from this HQ"
+
+log(`Member list only (not in CSV): ${rosterNotInCsv.size}\n`);
+log(`CSV-only (not in roster): ${csvNotInRoster.size}\n`);
+
+setStatus('Building XLSX…');
+const wb = buildWorkbook(parsedRows, columns, months, { rosterNotInCsv, csvNotInRoster, rosterNames });
+
   const buf = await wb.xlsx.writeBuffer();
   const blob = new Blob([buf], {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
   const name = `MemberActivity_${months[months.length-1]}_to_${months[0]}.xlsx`;
