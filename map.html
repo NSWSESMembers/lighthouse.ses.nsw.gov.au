@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>SES Unit/Zone Boundaries - Lighthouse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -36,12 +36,69 @@
       font-size: 14px;
       font-weight: bold;
     }
+
+    .geocode-search {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      width: 280px;
+    }
+    .geocode-search form {
+      display: flex;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .geocode-search input[type="text"] {
+      flex: 1;
+      border: none;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .geocode-search button {
+      border: none;
+      background: #1a73e8;
+      color: #fff;
+      padding: 0 14px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .geocode-search button:hover { background: #1558b3; }
+    .geocode-results {
+      list-style: none;
+      margin: 4px 0 0;
+      padding: 0;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+      max-height: 220px;
+      overflow-y: auto;
+    }
+    .geocode-results li {
+      padding: 8px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+    .geocode-results li:last-child { border-bottom: none; }
+    .geocode-results li:hover { background: #f0f4ff; }
+    .geocode-results li.geocode-status { cursor: default; color: #666; }
   </style>
 </head>
 <body>
 
   <div id="map"></div>
   <div class="map-title">Unit/Zone Boundaries Hybrid</div>
+
+  <div class="geocode-search">
+    <form id="geocode-form">
+      <input type="text" id="geocode-input" placeholder="Search address..." autocomplete="off">
+      <button type="submit">Go</button>
+    </form>
+    <ul class="geocode-results" id="geocode-results" hidden></ul>
+  </div>
 
   <script>
     const map = L.map('map', {
@@ -180,6 +237,68 @@
     }
 
     registerSESUnitsZonesHybridGridLayer(map);
+
+    // Address geocoding via OpenStreetMap's Nominatim - free, no API key required.
+    // Usage policy: https://operations.osmfoundation.org/policies/nominatim/ (max 1 req/sec, no bulk use).
+    let geocodeMarker = null;
+
+    function renderGeocodeStatus(message) {
+      const list = document.getElementById('geocode-results');
+      list.innerHTML = `<li class="geocode-status">${message}</li>`;
+      list.hidden = false;
+    }
+
+    function renderGeocodeResults(results) {
+      const list = document.getElementById('geocode-results');
+      list.innerHTML = '';
+
+      if (results.length === 0) {
+        renderGeocodeStatus('No results found');
+        return;
+      }
+
+      results.forEach(result => {
+        const item = document.createElement('li');
+        item.textContent = result.display_name;
+        item.addEventListener('click', () => selectGeocodeResult(result));
+        list.appendChild(item);
+      });
+      list.hidden = false;
+    }
+
+    function selectGeocodeResult(result) {
+      const latlng = [parseFloat(result.lat), parseFloat(result.lon)];
+
+      if (geocodeMarker) map.removeLayer(geocodeMarker);
+      geocodeMarker = L.marker(latlng).addTo(map).bindPopup(result.display_name).openPopup();
+
+      map.flyTo(latlng, 15);
+      document.getElementById('geocode-results').hidden = true;
+    }
+
+    async function geocodeAddress(query) {
+      renderGeocodeStatus('Searching...');
+
+      const url = new URL('https://nominatim.openstreetmap.org/search');
+      url.searchParams.set('q', query);
+      url.searchParams.set('format', 'jsonv2');
+      url.searchParams.set('countrycodes', 'au');
+      url.searchParams.set('limit', '5');
+
+      try {
+        const response = await fetch(url);
+        const results = await response.json();
+        renderGeocodeResults(results);
+      } catch (err) {
+        renderGeocodeStatus('Search failed, try again');
+      }
+    }
+
+    document.getElementById('geocode-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const query = document.getElementById('geocode-input').value.trim();
+      if (query) geocodeAddress(query);
+    });
   </script>
 </body>
 </html>
