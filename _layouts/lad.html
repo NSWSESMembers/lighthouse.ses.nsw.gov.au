@@ -28,6 +28,8 @@
 		.guide-nav .pdf { display: block; margin-top: 1rem; font-size: 0.85rem; }
 		.guide .main-content { flex: 1; min-width: 0; max-width: none; padding: 0; margin: 0; }
 		.guide .main-content img { border: 1px solid #e9ebec; border-radius: 4px; margin: 0.5rem 0; }
+		.guide .main-content img.icon { display: inline; border: 0; border-radius: 0; margin: 0 0.15rem; vertical-align: middle; }
+		.guide .main-content td img.icon { margin: 0 0.1rem; }
 		.guide .main-content kbd { display: inline-block; padding: 0.1rem 0.4rem; font-size: 0.85em; font-family: Consolas, "Liberation Mono", Menlo, monospace; border: 1px solid #c6cbd1; border-bottom-color: #959da5; border-radius: 3px; background: #fafbfc; box-shadow: inset 0 -1px 0 #959da5; }
 		.guide-footer-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e9ebec; font-size: 0.9rem; }
 		@media screen and (max-width: 48em) {
@@ -64,7 +66,7 @@
 				<li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="current" aria-current="page"{% endif %}>{{ p.title }}</a></li>
 				{% endfor %}
 			</ol>
-			<a class="pdf" href="/guides/LAD%20-%20Learner%20Guide%20v1.5.pdf">Archived v1.5 PDF</a>
+			<a class="pdf" href="/guides/LAD%20-%20Learner%20Guide%20v1.6.pdf">v1.6 PDF</a>
 		</nav>
 
 		<section class="main-content">
