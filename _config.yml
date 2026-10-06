@@ -3,8 +3,8 @@
 title: Lighthouse
 description: Lighthouse is a browser extension, built by NSW SES volunteers, that adds tools and shortcuts to Beacon.
 
-install_url: http://bit.ly/1HjG6Jn
-install_dev_url: http://bit.ly/1PhIkJv
+install_url: https://chromewebstore.google.com/detail/lighthouse/eheijalihofgiaoeanmnjceefmcpajnb
+install_dev_url: https://chromewebstore.google.com/detail/lighthouse-development-pr/jcmiinngebdojjbcjlpjpdhiankmjbda
 facebook_url: https://www.facebook.com/groups/LighthouseExtension/
 
 # Home page headline: one is picked at random on each page load.
