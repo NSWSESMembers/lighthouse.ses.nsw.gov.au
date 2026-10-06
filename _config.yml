@@ -1,5 +1,22 @@
-# Only Markdown pages under guides/ use a layout. The existing .html pages have
-# no front matter, so Jekyll copies them through unchanged.
+# Pages with front matter use _layouts/default.html (or a layout built on it).
+# map.html and activity/ have no front matter, so Jekyll copies them through unchanged.
+title: Lighthouse
+description: Lighthouse is a browser extension, built by NSW SES volunteers, that adds tools and shortcuts to Beacon.
+
+install_url: http://bit.ly/1HjG6Jn
+install_dev_url: http://bit.ly/1PhIkJv
+facebook_url: https://www.facebook.com/groups/LighthouseExtension/
+
+# Home page headline: one is picked at random on each page load.
+# The first is shown if JavaScript is off, so keep it a safe one.
+taglines:
+  - Beacon, with a few more tools.
+  - Do more in Beacon, with less clicking.
+  - Beacon, but with fewer tabs open.
+  - Making Beacon do things Beacon didn't know it could do.
+  - The tool your IC pretends not to rely on.
+  - The tools you wished Beacon had, made by people who use it.
+
 markdown: kramdown
 kramdown:
   input: GFM
@@ -11,8 +28,15 @@ plugins:
 relative_links:
   enabled: true
 
+# guides/lad/ and whats-new/ are synced from docs/ in NSWSESMembers/Lighthouse,
+# so their layouts are set here rather than in each file's front matter.
 defaults:
   - scope:
       path: "guides/lad"
     values:
       layout: lad
+      title_suffix: LAD User Guide
+  - scope:
+      path: "whats-new"
+    values:
+      layout: whats-new

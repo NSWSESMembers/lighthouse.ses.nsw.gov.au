@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{% if page.title %}{{ page.title }} · {% endif %}{% if page.title_suffix %}{{ page.title_suffix }} · {% endif %}Lighthouse</title>
+	<meta name="description" content="{{ page.description | default: site.description }}">
+	<meta name="theme-color" content="#f08a24">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap">
+	<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+	<a class="visually-hidden" href="#main">Skip to content</a>
+	<header class="site-header">
+		<div class="container">
+			<a class="brand" href="/">
+				<img src="/images/lighthouse128.png" alt="" width="32" height="32">
+				Lighthouse
+			</a>
+			<nav class="site-nav" aria-label="Site">
+				<a href="/"{% if page.url == "/" or page.url == "/index.html" %} aria-current="page"{% endif %}>Home</a>
+				<a href="/whats-new/"{% if page.url contains "/whats-new/" %} aria-current="page"{% endif %}>What's New</a>
+				<a href="/guides.html"{% if page.url contains "/guides" %} aria-current="page"{% endif %}>User Guides</a>
+				<a href="/#help">Help</a>
+				<a href="https://github.com/NSWSESMembers/Lighthouse">GitHub</a>
+			</nav>
+			<a class="btn btn-primary btn-sm" href="/#install">Install</a>
+		</div>
+	</header>
+
+	<main id="main">
+		{{ content }}
+	</main>
+
+	<footer class="site-footer">
+		<div class="container">
+			<div>
+				<p><strong>Lighthouse</strong> is designed, written and supported by NSW SES volunteers.</p>
+				<p>It is not supported by the NSW SES Helpdesk. For help, use the <a href="{{ site.facebook_url }}">Facebook group</a> or <a href="https://github.com/NSWSESMembers/Lighthouse/issues">GitHub issues</a>.</p>
+			</div>
+			<nav aria-label="Footer">
+				<a href="/whats-new/">What's New</a>
+				<a href="/guides.html">User Guides</a>
+				<a href="{{ site.install_url }}">Install</a>
+				<a href="{{ site.install_dev_url }}">Install Development Version</a>
+				<a href="https://github.com/NSWSESMembers/Lighthouse">Source on GitHub</a>
+			</nav>
+		</div>
+	</footer>
+</body>
+</html>
