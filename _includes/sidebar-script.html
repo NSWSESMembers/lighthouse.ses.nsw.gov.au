@@ -1,0 +1,24 @@
+<script>
+	(function () {
+		// On narrow screens the sidebar starts collapsed so the content comes first.
+		var details = document.querySelector('.sidebar details');
+		if (details && !window.matchMedia('(min-width: 60em)').matches) details.open = false;
+
+		// Highlight the sidebar link for the section currently at the top of the page.
+		var items = [];
+		document.querySelectorAll('.sidebar ol ol a, .sidebar [data-spy] a').forEach(function (a) {
+			var h = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+			if (h) items.push({ link: a, heading: h });
+		});
+		if (!items.length) return;
+		function update() {
+			var current = items[0];
+			items.forEach(function (it) {
+				if (it.heading.getBoundingClientRect().top <= 120) current = it;
+			});
+			items.forEach(function (it) { it.link.classList.toggle('active', it === current); });
+		}
+		window.addEventListener('scroll', update, { passive: true });
+		update();
+	})();
+</script>

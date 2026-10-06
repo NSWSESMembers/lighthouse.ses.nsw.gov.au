@@ -1,85 +1,18 @@
-<!DOCTYPE html>
-<html lang="en-au">
-<head>
-	<meta charset="UTF-8">
-	<title>{{ page.title }} · LAD User Guide · Lighthouse</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" media="screen">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/stylesheet.css" media="screen">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/github-light.css" media="screen">
-	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-	<link rel="icon" href="/favicon.ico" type="image/x-icon">
-	<style>
-		.guide-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 1.5rem; padding: 0.6rem 1.5rem; color: #fff; background-color: #159957; background-image: linear-gradient(120deg, #155799, #159957); }
-		.guide-brand { display: flex; align-items: center; gap: 0.6rem; color: #fff; font-size: 1.15rem; font-weight: bold; white-space: nowrap; }
-		.guide-brand:hover { text-decoration: none; }
-		.guide-brand-sub { font-weight: normal; opacity: 0.8; }
-		.guide-header-links { display: flex; flex-wrap: wrap; gap: 0.25rem; }
-		.guide-header-links a { padding: 0.3rem 0.7rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); border-radius: 0.3rem; }
-		.guide-header-links a:hover { color: #fff; text-decoration: none; background-color: rgba(255, 255, 255, 0.15); }
-		.guide { display: flex; gap: 2rem; max-width: 80rem; margin: 0 auto; padding: 2rem 1rem; }
-		.guide-nav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start; max-height: calc(100vh - 2rem); overflow-y: auto; font-size: 0.95rem; }
-		.guide-nav h2 { font-size: 1rem; margin: 0 0 0.5rem; color: #159957; font-weight: bold; }
-		.guide-nav ol { list-style: none; padding: 0; margin: 0; }
-		.guide-nav li a { display: block; padding: 0.3rem 0.6rem; border-left: 3px solid transparent; color: #606c71; }
-		.guide-nav li a:hover { color: #1e6bb8; text-decoration: none; border-left-color: #e9ebec; }
-		.guide-nav li a.current { color: #159957; font-weight: bold; border-left-color: #159957; }
-		.guide-nav ol.guide-sections { margin: 0.1rem 0 0.4rem 0.6rem; border-left: 1px solid #e9ebec; }
-		.guide-nav ol.guide-sections a { padding: 0.15rem 0.6rem; margin-left: -1px; font-size: 0.85rem; font-weight: normal; border-left-width: 2px; }
-		.guide-nav ol.guide-sections a.active { color: #159957; border-left-color: #159957; }
-		.guide-nav .pdf { display: block; margin-top: 1rem; font-size: 0.85rem; }
-		.guide-version { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #e9ebec; font-size: 0.8rem; line-height: 1.4; }
-		.guide-version code { font-size: 0.95em; }
-		.guide .main-content { flex: 1; min-width: 0; max-width: none; padding: 0; margin: 0; }
-		.guide .main-content img { border: 1px solid #e9ebec; border-radius: 4px; margin: 0.5rem 0; }
-		.guide .main-content img.icon { display: inline; border: 0; border-radius: 0; margin: 0 0.15rem; vertical-align: middle; }
-		.guide .main-content td img.icon { margin: 0 0.1rem; }
-		.guide .main-content kbd { display: inline-block; padding: 0.1rem 0.4rem; font-size: 0.85em; font-family: Consolas, "Liberation Mono", Menlo, monospace; border: 1px solid #c6cbd1; border-bottom-color: #959da5; border-radius: 3px; background: #fafbfc; box-shadow: inset 0 -1px 0 #959da5; }
-		.guide-footer-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e9ebec; font-size: 0.9rem; }
-		@media screen and (max-width: 48em) {
-			.guide { flex-direction: column; gap: 1rem; padding: 1rem; }
-			.guide-nav { position: static; flex-basis: auto; }
-			.guide-header { padding: 0.5rem 1rem; }
-			.guide-brand-sub { display: none; }
-		}
-		@media print {
-			.guide-header, .guide-nav, .guide-footer-links, .site-footer { display: none !important; }
-			.guide { display: block; max-width: none; padding: 0; }
-			body { font-size: 10.5pt; color: #333; }
-			.guide .main-content img { max-width: 100%; }
-			.guide .main-content h1, .guide .main-content h2, .guide .main-content h3 { color: #159957; break-after: avoid; }
-			.guide .main-content img, .guide .main-content table { break-inside: avoid; }
-			.guide .main-content a { color: inherit; }
-		}
-	</style>
-</head>
-<body>
-	<header class="guide-header">
-		<a class="guide-brand" href="/guides/lad/">
-			<img src="/images/lighthouse128.png" alt="" width="32" height="32">
-			<span>Lighthouse <span class="guide-brand-sub">· LAD User Guide</span></span>
-		</a>
-		<nav class="guide-header-links" aria-label="Site">
-			<a href="/index.html">Home</a>
-			<a href="/guides.html">User Guides</a>
-			<a href="https://www.facebook.com/groups/LighthouseExtension/">Facebook</a>
-			<a href="http://bit.ly/1HjG6Jn">Install</a>
-			<a href="http://bit.ly/1PhIkJv">Install Dev</a>
-		</nav>
-	</header>
-
-	{% assign guide_pages = site.pages | where_exp: "p", "p.path contains 'guides/lad/'" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
-	{% assign source_path = page.path | remove_first: "guides/lad/" %}
-
-	<div class="guide">
-		<nav class="guide-nav" aria-label="LAD guide contents">
-			<h2>Contents</h2>
+---
+layout: default
+---
+{% assign guide_pages = site.pages | where_exp: "p", "p.path contains 'guides/lad/'" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
+{% assign source_path = page.path | remove_first: "guides/lad/" %}
+<div class="container with-sidebar">
+	<aside class="sidebar">
+		<details open>
+			<summary>LAD User Guide contents</summary>
+			<h2>LAD User Guide</h2>
 			<ol>
 				{% for p in guide_pages %}
 				<li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="current" aria-current="page"{% endif %}>{{ p.title }}</a>
 				{% if p.url == page.url %}{% assign h2s = content | split: '<h2 id="' %}{% if h2s.size > 1 %}
-					<ol class="guide-sections">
+					<ol>
 					{% for chunk in h2s offset: 1 %}{% assign h_id = chunk | split: '"' | first %}{% assign h_text = chunk | split: '</h2>' | first | split: '>' | shift | join: '>' | strip_html %}
 						<li><a href="#{{ h_id }}">{{ h_text }}</a></li>
 					{% endfor %}
@@ -88,50 +21,30 @@
 				</li>
 				{% endfor %}
 			</ol>
-			<a class="pdf" href="/guides/lad/print.html">Print / save the whole guide as PDF</a>
-			{% if site.data.lad_guide %}
-			<p class="guide-version">Written for Lighthouse<br><a href="https://github.com/NSWSESMembers/Lighthouse/commit/{{ site.data.lad_guide.commit }}"><code>{{ site.data.lad_guide.version_name }}</code></a></p>
-			{% endif %}
-		</nav>
-
-		<section class="main-content">
-			{{ content }}
-
-			<div class="guide-footer-links">
-				{% for p in guide_pages %}{% if p.url == page.url %}
-					{% assign prev_i = forloop.index0 | minus: 1 %}
-					{% assign next_i = forloop.index0 | plus: 1 %}
-					<span>{% if prev_i >= 0 %}← <a href="{{ guide_pages[prev_i].url | relative_url }}">{{ guide_pages[prev_i].title }}</a>{% endif %}</span>
-					<span><a href="https://github.com/NSWSESMembers/Lighthouse/edit/master-dev/docs/lad/{{ source_path }}">Suggest an edit</a></span>
-					<span>{% if guide_pages[next_i] %}<a href="{{ guide_pages[next_i].url | relative_url }}">{{ guide_pages[next_i].title }}</a> →{% endif %}</span>
-				{% endif %}{% endfor %}
+			<div class="sidebar-extra">
+				<p><a href="/whats-new/">What's New in Lighthouse</a></p>
+				<p><a href="/guides/lad/print.html">Print or save the whole guide as PDF</a></p>
+				{% if site.data.lad_guide %}
+				<p>Written for Lighthouse <a href="https://github.com/NSWSESMembers/Lighthouse/commit/{{ site.data.lad_guide.commit }}"><code>{{ site.data.lad_guide.version_name }}</code></a></p>
+				{% endif %}
 			</div>
+		</details>
+	</aside>
 
-			<footer class="site-footer">
-				<span class="site-footer-owner"><a href="https://github.com/NSWSESMembers/Lighthouse">Lighthouse</a> is maintained by <a href="https://github.com/NSWSESMembers">NSWSESMembers</a>.</span>
-			</footer>
-		</section>
-	</div>
-	<script>
-		// Highlight the sidebar link for the section currently at the top of the page.
-		(function () {
-			var links = document.querySelectorAll('.guide-sections a');
-			if (!links.length) return;
-			var items = [];
-			links.forEach(function (a) {
-				var h = document.getElementById(decodeURIComponent(a.hash.slice(1)));
-				if (h) items.push({ link: a, heading: h });
-			});
-			function update() {
-				var current = items[0];
-				items.forEach(function (it) {
-					if (it.heading.getBoundingClientRect().top <= 120) current = it;
-				});
-				items.forEach(function (it) { it.link.classList.toggle('active', it === current); });
-			}
-			window.addEventListener('scroll', update, { passive: true });
-			update();
-		})();
-	</script>
-</body>
-</html>
+	<article>
+		<div class="prose">
+			{{ content }}
+		</div>
+
+		<nav class="pager" aria-label="Guide pages">
+			{% for p in guide_pages %}{% if p.url == page.url %}
+				{% assign prev_i = forloop.index0 | minus: 1 %}
+				{% assign next_i = forloop.index0 | plus: 1 %}
+				<span>{% if prev_i >= 0 %}<a href="{{ guide_pages[prev_i].url | relative_url }}">← {{ guide_pages[prev_i].title }}</a>{% endif %}</span>
+				<a class="edit" href="https://github.com/NSWSESMembers/Lighthouse/edit/master-dev/docs/lad/{{ source_path }}">Suggest an edit</a>
+				<span>{% if guide_pages[next_i] %}<a href="{{ guide_pages[next_i].url | relative_url }}">{{ guide_pages[next_i].title }} →</a>{% endif %}</span>
+			{% endif %}{% endfor %}
+		</nav>
+	</article>
+</div>
+{% include sidebar-script.html %}

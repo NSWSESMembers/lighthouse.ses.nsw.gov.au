@@ -1,0 +1,46 @@
+---
+layout: default
+---
+{% comment %}
+	whats-new/index.md is synced from docs/whats-new/ in NSWSESMembers/Lighthouse.
+	Each "## " heading is a release, followed by an italic "date · tag" line.
+	The sidebar lists them by date (or by heading for the yearly round-ups).
+{% endcomment %}
+<header class="page-head">
+	<div class="container">
+		<h1>{{ page.title }}</h1>
+		<p>{{ page.description }}</p>
+	</div>
+</header>
+<div class="container with-sidebar">
+	<aside class="sidebar">
+		<details open>
+			<summary>Jump to a release</summary>
+			<h2>Releases</h2>
+			<ol data-spy>
+				{% assign h2s = content | split: '<h2 id="' %}
+				{% for chunk in h2s offset: 1 %}
+					{% assign h_id = chunk | split: '"' | first %}
+					{% assign h_text = chunk | split: '</h2>' | first | split: '>' | shift | join: '>' | strip_html %}
+					{% assign after = chunk | split: '</h2>' | last | strip %}
+					{% assign starts = after | slice: 0, 7 %}
+					{% if starts == '<p><em>' %}
+						{% assign h_label = after | split: '</em>' | first | strip_html | split: ' · ' | first %}
+					{% else %}
+						{% assign h_label = h_text %}
+					{% endif %}
+					<li><a href="#{{ h_id }}" title="{{ h_text | escape }}">{{ h_label }}</a></li>
+				{% endfor %}
+			</ol>
+			<div class="sidebar-extra">
+				<p><a href="https://github.com/NSWSESMembers/Lighthouse/releases">Developer release notes on GitHub</a></p>
+				<p><a href="https://github.com/NSWSESMembers/Lighthouse/edit/master-dev/docs/whats-new/index.md">Suggest an edit</a></p>
+			</div>
+		</details>
+	</aside>
+
+	<article class="prose changelog">
+		{{ content }}
+	</article>
+</div>
+{% include sidebar-script.html %}
