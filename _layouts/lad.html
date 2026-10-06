@@ -19,13 +19,18 @@
 		.guide-header-links a { padding: 0.3rem 0.7rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); border-radius: 0.3rem; }
 		.guide-header-links a:hover { color: #fff; text-decoration: none; background-color: rgba(255, 255, 255, 0.15); }
 		.guide { display: flex; gap: 2rem; max-width: 80rem; margin: 0 auto; padding: 2rem 1rem; }
-		.guide-nav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start; font-size: 0.95rem; }
+		.guide-nav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start; max-height: calc(100vh - 2rem); overflow-y: auto; font-size: 0.95rem; }
 		.guide-nav h2 { font-size: 1rem; margin: 0 0 0.5rem; color: #159957; font-weight: bold; }
 		.guide-nav ol { list-style: none; padding: 0; margin: 0; }
 		.guide-nav li a { display: block; padding: 0.3rem 0.6rem; border-left: 3px solid transparent; color: #606c71; }
 		.guide-nav li a:hover { color: #1e6bb8; text-decoration: none; border-left-color: #e9ebec; }
 		.guide-nav li a.current { color: #159957; font-weight: bold; border-left-color: #159957; }
+		.guide-nav ol.guide-sections { margin: 0.1rem 0 0.4rem 0.6rem; border-left: 1px solid #e9ebec; }
+		.guide-nav ol.guide-sections a { padding: 0.15rem 0.6rem; margin-left: -1px; font-size: 0.85rem; font-weight: normal; border-left-width: 2px; }
+		.guide-nav ol.guide-sections a.active { color: #159957; border-left-color: #159957; }
 		.guide-nav .pdf { display: block; margin-top: 1rem; font-size: 0.85rem; }
+		.guide-version { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid #e9ebec; font-size: 0.8rem; line-height: 1.4; }
+		.guide-version code { font-size: 0.95em; }
 		.guide .main-content { flex: 1; min-width: 0; max-width: none; padding: 0; margin: 0; }
 		.guide .main-content img { border: 1px solid #e9ebec; border-radius: 4px; margin: 0.5rem 0; }
 		.guide .main-content img.icon { display: inline; border: 0; border-radius: 0; margin: 0 0.15rem; vertical-align: middle; }
@@ -63,10 +68,21 @@
 			<h2>Contents</h2>
 			<ol>
 				{% for p in guide_pages %}
-				<li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="current" aria-current="page"{% endif %}>{{ p.title }}</a></li>
+				<li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="current" aria-current="page"{% endif %}>{{ p.title }}</a>
+				{% if p.url == page.url %}{% assign h2s = content | split: '<h2 id="' %}{% if h2s.size > 1 %}
+					<ol class="guide-sections">
+					{% for chunk in h2s offset: 1 %}{% assign h_id = chunk | split: '"' | first %}{% assign h_text = chunk | split: '</h2>' | first | split: '>' | shift | join: '>' | strip_html %}
+						<li><a href="#{{ h_id }}">{{ h_text }}</a></li>
+					{% endfor %}
+					</ol>
+				{% endif %}{% endif %}
+				</li>
 				{% endfor %}
 			</ol>
 			<a class="pdf" href="/guides/LAD%20-%20Learner%20Guide%20v1.6.pdf">v1.6 PDF</a>
+			{% if site.data.lad_guide %}
+			<p class="guide-version">Written for Lighthouse<br><a href="https://github.com/NSWSESMembers/Lighthouse/commit/{{ site.data.lad_guide.commit }}"><code>{{ site.data.lad_guide.version_name }}</code></a></p>
+			{% endif %}
 		</nav>
 
 		<section class="main-content">
@@ -87,5 +103,26 @@
 			</footer>
 		</section>
 	</div>
+	<script>
+		// Highlight the sidebar link for the section currently at the top of the page.
+		(function () {
+			var links = document.querySelectorAll('.guide-sections a');
+			if (!links.length) return;
+			var items = [];
+			links.forEach(function (a) {
+				var h = document.getElementById(decodeURIComponent(a.hash.slice(1)));
+				if (h) items.push({ link: a, heading: h });
+			});
+			function update() {
+				var current = items[0];
+				items.forEach(function (it) {
+					if (it.heading.getBoundingClientRect().top <= 120) current = it;
+				});
+				items.forEach(function (it) { it.link.classList.toggle('active', it === current); });
+			}
+			window.addEventListener('scroll', update, { passive: true });
+			update();
+		})();
+	</script>
 </body>
 </html>
