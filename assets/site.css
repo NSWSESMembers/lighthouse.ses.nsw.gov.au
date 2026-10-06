@@ -177,11 +177,12 @@ a.card:hover h3 { color: var(--accent-ink); }
 .card-featured { border-color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
 .card-media { display: block; width: calc(100% + 2.7rem); max-width: none; height: 11rem; margin: -1.25rem -1.35rem 1.1rem; object-fit: cover; object-position: top left; border-bottom: 1px solid var(--line); border-radius: var(--radius) var(--radius) 0 0; background: var(--bg-soft); }
 .card-featured .card-media { margin-top: -1.25rem; }
+.card-media.fit { object-fit: scale-down; object-position: center top; }
 .gallery { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 .gallery figure { margin: 0; display: flex; flex-direction: column; background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
 .gallery a { display: block; aspect-ratio: 16 / 10; background: var(--bg-soft); border-bottom: 1px solid var(--line); }
 .gallery img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
-.gallery img.fit { object-fit: contain; object-position: center; padding: 1rem; }
+.gallery img.fit { object-fit: scale-down; object-position: center; padding: 1rem; }
 .gallery figcaption { padding: .85rem 1rem 1rem; color: var(--ink-2); font-size: .925rem; }
 .gallery figcaption strong { color: var(--ink); }
 .feature-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; margin-bottom: .9rem; color: var(--accent-ink); background: var(--accent-soft); border-radius: 10px; }
