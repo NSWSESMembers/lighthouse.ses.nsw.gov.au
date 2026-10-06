@@ -11,6 +11,13 @@
 	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 	<style>
+		.guide-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 1.5rem; padding: 0.6rem 1.5rem; color: #fff; background-color: #159957; background-image: linear-gradient(120deg, #155799, #159957); }
+		.guide-brand { display: flex; align-items: center; gap: 0.6rem; color: #fff; font-size: 1.15rem; font-weight: bold; white-space: nowrap; }
+		.guide-brand:hover { text-decoration: none; }
+		.guide-brand-sub { font-weight: normal; opacity: 0.8; }
+		.guide-header-links { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+		.guide-header-links a { padding: 0.3rem 0.7rem; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85); border-radius: 0.3rem; }
+		.guide-header-links a:hover { color: #fff; text-decoration: none; background-color: rgba(255, 255, 255, 0.15); }
 		.guide { display: flex; gap: 2rem; max-width: 80rem; margin: 0 auto; padding: 2rem 1rem; }
 		.guide-nav { flex: 0 0 14rem; position: sticky; top: 1rem; align-self: flex-start; font-size: 0.95rem; }
 		.guide-nav h2 { font-size: 1rem; margin: 0 0 0.5rem; color: #159957; font-weight: bold; }
@@ -26,20 +33,25 @@
 		@media screen and (max-width: 48em) {
 			.guide { flex-direction: column; gap: 1rem; padding: 1rem; }
 			.guide-nav { position: static; flex-basis: auto; }
+			.guide-header { padding: 0.5rem 1rem; }
+			.guide-brand-sub { display: none; }
 		}
 	</style>
 </head>
 <body>
-	<section class="page-header">
-		<img src="/images/lighthouse128.png" alt="">
-		<h1 class="project-name">Lighthouse</h1>
-		<h2 class="project-tagline">LAD User Guide</h2>
-		<a href="/index.html" class="btn">Home</a>
-		<a href="/guides.html" class="btn">User Guides</a>
-		<a href="https://www.facebook.com/groups/LighthouseExtension/" class="btn">Discuss on Facebook</a>
-		<a href="http://bit.ly/1HjG6Jn" class="btn">Install Latest Version</a>
-		<a href="http://bit.ly/1PhIkJv" class="btn">Install Latest Development Version</a>
-	</section>
+	<header class="guide-header">
+		<a class="guide-brand" href="/guides/lad/">
+			<img src="/images/lighthouse128.png" alt="" width="32" height="32">
+			<span>Lighthouse <span class="guide-brand-sub">· LAD User Guide</span></span>
+		</a>
+		<nav class="guide-header-links" aria-label="Site">
+			<a href="/index.html">Home</a>
+			<a href="/guides.html">User Guides</a>
+			<a href="https://www.facebook.com/groups/LighthouseExtension/">Facebook</a>
+			<a href="http://bit.ly/1HjG6Jn">Install</a>
+			<a href="http://bit.ly/1PhIkJv">Install Dev</a>
+		</nav>
+	</header>
 
 	{% assign guide_pages = site.pages | where_exp: "p", "p.path contains 'guides/lad/'" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
 	{% assign source_path = page.path | remove_first: "guides/lad/" %}
