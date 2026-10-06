@@ -1,0 +1,109 @@
+---
+layout: null
+permalink: /guides/lad/print.html
+# Lives outside guides/lad/ because the Lighthouse sync replaces that folder.
+---
+{% assign guide_pages = site.pages | where_exp: "p", "p.path contains 'guides/lad/'" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
+<!DOCTYPE html>
+<html lang="en-au">
+<head>
+	<meta charset="UTF-8">
+	<title>LAD User Guide (print) · Lighthouse</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+	<link rel="icon" href="/favicon.ico" type="image/x-icon">
+	<style>
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #333; background: #fff; }
+		a { color: #1e6bb8; text-decoration: none; }
+		.print-bar { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.6rem 1.5rem; color: #fff; background-color: #159957; background-image: linear-gradient(120deg, #155799, #159957); }
+		.print-bar a { color: rgba(255, 255, 255, 0.9); }
+		.print-bar button { font: inherit; font-weight: bold; padding: 0.4rem 1rem; color: #155799; background: #fff; border: 0; border-radius: 0.3rem; cursor: pointer; }
+		.doc { max-width: 52rem; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+		.cover { text-align: center; padding: 3rem 0 2rem; }
+		.cover img { width: 220px; }
+		.cover h1 { font-size: 2.2rem; color: #155799; margin: 1.5rem 0 0.25rem; }
+		.cover p { margin: 0.25rem 0; color: #606c71; }
+		.toc { margin: 2rem 0; }
+		.toc h2 { font-size: 1.2rem; color: #159957; }
+		.toc ol { padding-left: 1.4rem; }
+		.toc ol ol { list-style: none; padding-left: 1rem; font-size: 0.9em; }
+		.chapter h1 { font-size: 1.8rem; color: #155799; border-bottom: 2px solid #159957; padding-bottom: 0.3rem; margin-top: 3rem; }
+		.chapter h2 { font-size: 1.35rem; color: #159957; margin-top: 2rem; }
+		.chapter h3, .chapter h4, .chapter h5 { color: #159957; margin-top: 1.5rem; }
+		.chapter img { max-width: 100%; border: 1px solid #e9ebec; border-radius: 4px; margin: 0.4rem 0; }
+		.chapter img.icon { display: inline; border: 0; margin: 0 0.15rem; vertical-align: middle; }
+		.chapter table { border-collapse: collapse; margin: 1rem 0; }
+		.chapter th, .chapter td { padding: 0.4rem 0.8rem; border: 1px solid #e9ebec; text-align: left; vertical-align: top; }
+		.chapter blockquote { margin: 1rem 0; padding: 0 1rem; color: #606c71; border-left: 0.3rem solid #dce6f0; }
+		.chapter code { font-family: Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.9em; padding: 0.1rem 0.3rem; background: #f3f6fa; border-radius: 0.2rem; }
+		.chapter kbd { padding: 0.05rem 0.35rem; font-size: 0.85em; font-family: Consolas, "Liberation Mono", Menlo, monospace; border: 1px solid #c6cbd1; border-radius: 3px; background: #fafbfc; }
+		@page { margin: 15mm 14mm; }
+		@media print {
+			body { font-size: 10.5pt; }
+			.print-bar { display: none; }
+			.doc { max-width: none; padding: 0; }
+			.cover { padding-top: 30mm; break-after: page; }
+			.toc { break-after: page; }
+			.chapter { break-before: page; }
+			.chapter h1 { margin-top: 0; }
+			h1, h2, h3, h4, h5 { break-after: avoid; }
+			img, table, blockquote { break-inside: avoid; }
+			a { color: inherit; }
+		}
+	</style>
+</head>
+<body>
+	<div class="print-bar">
+		<span><a href="/guides/lad/">← Back to the guide</a></span>
+		<button type="button" onclick="window.print()">Print / Save as PDF</button>
+	</div>
+
+	<main class="doc">
+		<section class="cover">
+			<img src="/guides/lad/images/lad-logo.png" alt="LAD">
+			<h1>Lighthouse Aided Dispatch (LAD)</h1>
+			<p>User Guide</p>
+			{% if site.data.lad_guide %}<p>Written for Lighthouse <code>{{ site.data.lad_guide.version_name }}</code></p>{% endif %}
+			<p>Printed from lighthouse.ses.nsw.gov.au/guides/lad/ — check there for the latest version.</p>
+		</section>
+
+		<nav class="toc" aria-label="Contents">
+			<h2>Contents</h2>
+			<ol>
+				{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == 'lad' %}{% assign slug = 'index' %}{% endif %}
+				<li><a href="#page-{{ slug }}">{{ p.title }}</a></li>
+				{% endfor %}
+			</ol>
+		</nav>
+
+		{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == 'lad' %}{% assign slug = 'index' %}{% endif %}
+		<article class="chapter" id="page-{{ slug }}" data-page="{{ slug }}">
+			{{ p.content | markdownify }}
+		</article>
+		{% endfor %}
+	</main>
+
+	<script>
+		// Each chapter was written as its own page. Make heading ids unique per
+		// chapter and turn links between pages into links within this document.
+		(function () {
+			document.querySelectorAll('.chapter').forEach(function (ch) {
+				var page = ch.dataset.page;
+				ch.querySelectorAll('[id]').forEach(function (el) { el.id = page + '--' + el.id; });
+				ch.querySelectorAll('a[href]').forEach(function (a) {
+					var href = a.getAttribute('href');
+					var m = href.match(/^(?:\/guides\/lad\/)?(?:([\w-]+)\.(?:md|html))?(?:#(.*))?$/);
+					if (!m) return;
+					if (!m[1] && !m[2]) {
+						if (href === '/guides/lad/') a.setAttribute('href', '#page-index');
+						return;
+					}
+					var target = m[1] || page;
+					a.setAttribute('href', m[2] ? '#' + target + '--' + m[2] : '#page-' + target);
+				});
+			});
+		})();
+	</script>
+</body>
+</html>
