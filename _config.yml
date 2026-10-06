@@ -1,0 +1,18 @@
+# Only Markdown pages under guides/ use a layout. The existing .html pages have
+# no front matter, so Jekyll copies them through unchanged.
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins:
+  - jekyll-relative-links   # turns [x](page.md) links into page.html
+
+relative_links:
+  enabled: true
+
+defaults:
+  - scope:
+      path: "guides/lad"
+    values:
+      layout: lad
