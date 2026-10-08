@@ -207,6 +207,11 @@ a.card:hover h3 { color: var(--accent-ink); }
 .install-options .btn:not(.btn-primary) { border-color: var(--accent); }
 .panel-warn { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
 
+/* ---- Development Preview banner (preview/ pages) ---- */
+
+.preview-banner { padding: .7rem 0; background: var(--accent-soft); border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); font-size: .925rem; }
+.preview-banner p { margin: 0; }
+
 /* ---- Page header (inner pages) ---- */
 
 .page-head { padding: 2.75rem 0 2rem; border-bottom: 1px solid var(--line); background: var(--bg-soft); }

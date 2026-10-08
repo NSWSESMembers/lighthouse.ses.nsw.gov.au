@@ -1,0 +1,12 @@
+{% comment %}
+	Shown on the preview/ copies of the guide and What's New, which are synced
+	from master-dev. Links to the same page in the stable copy.
+{% endcomment %}
+{% if page.preview %}
+<div class="preview-banner" role="note">
+	<div class="container">
+		<p><strong>Development Preview.</strong> This page describes Lighthouse Development Preview and may cover features that haven't been released yet.
+		<a href="{{ page.url | remove_first: '/preview' }}">See the stable version →</a></p>
+	</div>
+</div>
+{% endif %}
