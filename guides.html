@@ -24,6 +24,14 @@ description: Guides for using Lighthouse with Beacon.
 			<p>The whole LAD guide on one page, ready to print or save as a PDF.</p>
 			<a class="card-link" href="/guides/lad/print.html">Open the print view →</a>
 		</div>
+		{% if site.data.lad_guide_preview %}
+		<a class="card" href="/preview/guides/lad/">
+			<div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3"/><path d="M7 15h10"/></svg></div>
+			<h3>LAD guide for Development Preview</h3>
+			<p>The LAD guide as it stands in Lighthouse Development Preview, including features that haven't been released yet.</p>
+			<p class="meta card-foot">Written for Lighthouse Development Preview {{ site.data.lad_guide_preview.version_name }}</p>
+		</a>
+		{% endif %}
 		<a class="card" href="/whats-new/">
 			<div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 6.9H22l-6 4.6 2.3 7L12 16.3 5.7 20.5 8 13.5 2 8.9h7.6z"/></svg></div>
 			<h3>What's New</h3>

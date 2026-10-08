@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% if page.title %}{{ page.title }} · {% endif %}{% if page.title_suffix %}{{ page.title_suffix }} · {% endif %}Lighthouse</title>
 	<meta name="description" content="{{ page.description | default: site.description }}">
+	{% if page.preview %}<meta name="robots" content="noindex">{% endif %}
 	<meta name="theme-color" content="#f08a24">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +33,7 @@
 	</header>
 
 	<main id="main">
+		{% include preview-banner.html %}
 		{{ content }}
 	</main>
 

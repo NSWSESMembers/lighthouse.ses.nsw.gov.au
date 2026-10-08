@@ -1,8 +1,9 @@
 ---
 layout: default
 ---
-{% assign guide_pages = site.pages | where_exp: "p", "p.path contains 'guides/lad/'" | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
-{% assign source_path = page.path | remove_first: "guides/lad/" %}
+{% assign guide_pages = site.pages | where: "guide_root", page.guide_root | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
+{% assign source_path = page.path | remove_first: "preview/" | remove_first: "guides/lad/" %}
+{% assign stamp = site.data[page.lad_guide_data] %}
 <div class="container with-sidebar">
 	<aside class="sidebar">
 		<details open>
@@ -22,11 +23,14 @@ layout: default
 				{% endfor %}
 			</ol>
 			<div class="sidebar-extra">
-				<p><a href="/whats-new/">What's New in Lighthouse</a></p>
-				<p><a href="/guides/lad/print.html">Print or save the whole guide as PDF</a></p>
-				{% if site.data.lad_guide %}
-				<p>Written for Lighthouse <a href="https://github.com/NSWSESMembers/Lighthouse/commit/{{ site.data.lad_guide.commit }}"><code>{{ site.data.lad_guide.version_name }}</code></a></p>
+				<p><a href="{{ page.site_root }}/whats-new/">What's New in Lighthouse</a></p>
+				<p><a href="{{ page.guide_root }}print.html">Print or save the whole guide as PDF</a></p>
+				{% if stamp %}
+				<p>Written for Lighthouse <a href="https://github.com/NSWSESMembers/Lighthouse/commit/{{ stamp.commit }}"><code>{{ stamp.version_name }}</code></a></p>
 				{% endif %}
+				{% unless page.preview %}{% if site.data.lad_guide_preview %}
+				<p>Using Lighthouse Development Preview? <a href="/preview{{ page.url }}">Read the preview guide</a></p>
+				{% endif %}{% endunless %}
 			</div>
 		</details>
 	</aside>
