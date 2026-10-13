@@ -233,6 +233,23 @@ a.card:hover h3 { color: var(--accent-ink); }
 .sidebar ol ol { margin: .1rem 0 .4rem; }
 .sidebar ol ol a { padding: .2rem .75rem .2rem 1.5rem; font-size: .875rem; }
 .sidebar a.active { color: var(--accent-ink); border-left-color: var(--accent); }
+/* LAD guide search: results replace the sidebar contents while there's a query. */
+.guide-search { position: relative; margin: 0 0 1rem; }
+.guide-search input { width: 100%; padding: .5rem 2rem .5rem .75rem; font: inherit; color: var(--ink); background: var(--bg-card); border: 1px solid var(--line-strong); border-radius: 8px; }
+.guide-search input::placeholder { color: var(--ink-3); }
+.guide-search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+.guide-search-key { position: absolute; top: .45rem; right: .6rem; padding: 0 .35rem; font: .75rem/1.5 var(--mono); color: var(--ink-3); border: 1px solid var(--line-strong); border-radius: 4px; pointer-events: none; }
+.guide-search input:focus ~ .guide-search-key, .sidebar.searching .guide-search-key { display: none; }
+.guide-search-status { margin: .5rem 0 0; color: var(--ink-3); font-size: .8rem; }
+.guide-search-status:empty { display: none; }
+.sidebar ol.guide-search-results { margin-top: .4rem; }
+.sidebar .guide-search-results a { display: block; padding: .45rem .6rem; color: var(--ink-2); border: 0; border-radius: 6px; }
+.sidebar .guide-search-results a:hover, .sidebar .guide-search-results [aria-selected="true"] a { color: var(--ink); background: var(--accent-soft); }
+.guide-search-results .r-where { display: block; color: var(--ink-3); font-size: .75rem; }
+.guide-search-results .r-title { display: block; color: var(--ink); font-weight: 600; }
+.guide-search-results .r-text { display: block; margin-top: .15rem; font-size: .8rem; line-height: 1.45; }
+.guide-search-results mark, .prose mark.search-hit { color: inherit; background: var(--accent-soft); box-shadow: inset 0 -2px 0 var(--accent); border-radius: 2px; }
+.sidebar.searching details { display: none; }
 .sidebar-extra { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--line); color: var(--ink-3); font-size: .85rem; line-height: 1.5; }
 .sidebar-extra p { margin: 0 0 .6rem; }
 @media (max-width: 59.99em) {
