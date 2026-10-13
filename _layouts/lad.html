@@ -6,6 +6,14 @@ layout: default
 {% assign stamp = site.data[page.lad_guide_data] %}
 <div class="container with-sidebar">
 	<aside class="sidebar">
+		<form class="guide-search" role="search" data-index="{{ page.guide_root }}search.json">
+			<label class="visually-hidden" for="guide-search-input">Search the LAD guide</label>
+			<input id="guide-search-input" type="search" placeholder="Search the guide" autocomplete="off" spellcheck="false"
+				role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="guide-search-results">
+			<kbd class="guide-search-key" aria-hidden="true">/</kbd>
+			<p class="guide-search-status" role="status" aria-live="polite"></p>
+			<ol class="guide-search-results" id="guide-search-results" role="listbox" aria-label="Search results"></ol>
+		</form>
 		<details open>
 			<summary>LAD User Guide contents</summary>
 			<h2>LAD User Guide</h2>
@@ -52,3 +60,4 @@ layout: default
 	</article>
 </div>
 {% include sidebar-script.html %}
+<script src="/assets/lad-search.js" defer></script>
