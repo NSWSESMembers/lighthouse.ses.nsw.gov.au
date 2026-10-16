@@ -18,6 +18,15 @@ section of the LAD guide with a full /preview/guides/lad/... URL.
 The home page shows the first three `##` entries, so keep the title short.
 -->
 
+## Spotlight SMS, call off and help
+
+*16 October 2026*
+
+- **SMS a team from Spotlight.** Type `msg` and a team's callsign, then press Enter to open the Send SMS dialog for that team. See [SMS Team command](/preview/guides/lad/spotlight.html#sms-team-command--msg).
+- **Call off a team from Spotlight.** Type `calloff` with a team and an incident, in either order, then press Enter and give a reason. Only taskings that can be called off are offered. See [Call Off command](/preview/guides/lad/spotlight.html#call-off-command--calloff).
+- **Spotlight help.** Click the **?** button in Spotlight, or type `?`, to see all the commands, what you can search for and the keyboard shortcuts. Click a command to start it. See [Spotlight](/preview/guides/lad/spotlight.html).
+- The Spotlight `radio` command now lists teams when you type the incident before the team.
+
 ## LAD radio logs with status changes
 
 *15 October 2026*
