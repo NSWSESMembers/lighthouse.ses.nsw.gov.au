@@ -68,6 +68,15 @@ defaults:
       site_root: ""
       stamp_data: lad_guide
   - scope:
+      path: "guides/export"
+    values:
+      layout: guide
+      guide: export
+      title_suffix: Incident Export Guide
+      guide_root: /guides/export/
+      site_root: ""
+      stamp_data: lad_guide
+  - scope:
       path: "whats-new"
     values:
       layout: whats-new
@@ -99,6 +108,16 @@ defaults:
       guide: summary
       title_suffix: Incident Summary Guide (Dev Preview)
       guide_root: /preview/guides/summary/
+      site_root: /preview
+      stamp_data: lad_guide_preview
+      preview: true
+  - scope:
+      path: "preview/guides/export"
+    values:
+      layout: guide
+      guide: export
+      title_suffix: Incident Export Guide (Dev Preview)
+      guide_root: /preview/guides/export/
       site_root: /preview
       stamp_data: lad_guide_preview
       preview: true
