@@ -1,0 +1,9 @@
+---
+layout: null
+permalink: /preview/guides/nitc/search.json
+# Lives outside preview/guides/nitc/ because the Lighthouse sync replaces that folder.
+guide: nitc
+guide_root: /preview/guides/nitc/
+preview: true
+---
+{% include guide-search-index.json %}

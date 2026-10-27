@@ -34,3 +34,8 @@
   title: Incident Export
   description: Download an HQ's incidents as a CSV for Excel or Google Sheets. Pick the columns, preview the first rows, and add ICEMS update counts.
   icon: download
+- key: nitc
+  name: NITC Export Guide
+  title: NITC Export
+  description: Download Non-Incident Task Cards as a CSV, as a list of tasks with who took part or a list of members with their hours per tag.
+  icon: clipboard
