@@ -29,3 +29,8 @@
   title: Incident Summary
   description: An HQ's incident counts by status and type in big numbers for a screen on the wall, refreshed every 30 seconds, with a sound for new incidents.
   icon: tiles
+- key: export
+  name: Incident Export Guide
+  title: Incident Export
+  description: Download an HQ's incidents as a CSV for Excel or Google Sheets. Pick the columns, preview the first rows, and add ICEMS update counts.
+  icon: download

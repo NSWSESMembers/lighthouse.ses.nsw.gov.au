@@ -1,0 +1,9 @@
+---
+layout: null
+permalink: /preview/guides/export/search.json
+# Lives outside preview/guides/export/ because the Lighthouse sync replaces that folder.
+guide: export
+guide_root: /preview/guides/export/
+preview: true
+---
+{% include guide-search-index.json %}
