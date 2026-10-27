@@ -77,6 +77,15 @@ defaults:
       site_root: ""
       stamp_data: lad_guide
   - scope:
+      path: "guides/nitc"
+    values:
+      layout: guide
+      guide: nitc
+      title_suffix: NITC Export Guide
+      guide_root: /guides/nitc/
+      site_root: ""
+      stamp_data: lad_guide
+  - scope:
       path: "whats-new"
     values:
       layout: whats-new
@@ -118,6 +127,16 @@ defaults:
       guide: export
       title_suffix: Incident Export Guide (Dev Preview)
       guide_root: /preview/guides/export/
+      site_root: /preview
+      stamp_data: lad_guide_preview
+      preview: true
+  - scope:
+      path: "preview/guides/nitc"
+    values:
+      layout: guide
+      guide: nitc
+      title_suffix: NITC Export Guide (Dev Preview)
+      guide_root: /preview/guides/nitc/
       site_root: /preview
       stamp_data: lad_guide_preview
       preview: true
