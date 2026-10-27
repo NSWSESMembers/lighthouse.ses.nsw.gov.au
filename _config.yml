@@ -59,6 +59,15 @@ defaults:
       site_root: ""
       stamp_data: lad_guide
   - scope:
+      path: "guides/summary"
+    values:
+      layout: guide
+      guide: summary
+      title_suffix: Incident Summary Guide
+      guide_root: /guides/summary/
+      site_root: ""
+      stamp_data: lad_guide
+  - scope:
       path: "whats-new"
     values:
       layout: whats-new
@@ -80,6 +89,16 @@ defaults:
       guide: stats
       title_suffix: Incident Statistics Guide (Dev Preview)
       guide_root: /preview/guides/stats/
+      site_root: /preview
+      stamp_data: lad_guide_preview
+      preview: true
+  - scope:
+      path: "preview/guides/summary"
+    values:
+      layout: guide
+      guide: summary
+      title_suffix: Incident Summary Guide (Dev Preview)
+      guide_root: /preview/guides/summary/
       site_root: /preview
       stamp_data: lad_guide_preview
       preview: true
