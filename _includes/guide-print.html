@@ -1,15 +1,16 @@
 {% comment %}
-	The whole LAD guide on one page. Included by guides/lad-print.html (stable)
-	and preview/lad-print.html (Development Preview), which set guide_root,
-	lad_guide_data and preview in their front matter.
+	A whole guide on one page. Included by each guide's guides/<key>-print.html
+	(stable) and preview/<key>-print.html (Development Preview) stubs, which
+	set guide, guide_root, stamp_data and preview in their front matter.
 {% endcomment %}
+{% assign guide = site.data.guides | where: "key", page.guide | first %}
 {% assign guide_pages = site.pages | where: "guide_root", page.guide_root | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
-{% assign stamp = site.data[page.lad_guide_data] %}
+{% assign stamp = site.data[page.stamp_data] %}
 <!DOCTYPE html>
 <html lang="en-au">
 <head>
 	<meta charset="UTF-8">
-	<title>LAD User Guide{% if page.preview %} (Dev Preview){% endif %} (print) · Lighthouse</title>
+	<title>{{ guide.name }}{% if page.preview %} (Dev Preview){% endif %} (print) · Lighthouse</title>
 	{% if page.preview %}<meta name="robots" content="noindex">{% endif %}
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
@@ -63,9 +64,9 @@
 
 	<main class="doc">
 		<section class="cover">
-			<img src="{{ page.guide_root }}images/lad-logo.png" alt="LAD">
-			<h1>Lighthouse Aided Dispatch (LAD)</h1>
-			<p>User Guide{% if page.preview %}: Development Preview{% endif %}</p>
+			{% if guide.logo %}<img src="{{ page.guide_root }}{{ guide.logo }}" alt="">{% endif %}
+			<h1>{{ guide.title }}</h1>
+			<p>{{ guide.name }}{% if page.preview %}: Development Preview{% endif %}</p>
 			{% if stamp %}<p>Written for Lighthouse {% if page.preview %}Development Preview {% endif %}<code>{{ stamp.version_name }}</code></p>{% endif %}
 			<p>Printed from lighthouse.ses.nsw.gov.au{{ page.guide_root }} — check there for the latest version.</p>
 		</section>
@@ -73,13 +74,13 @@
 		<nav class="toc" aria-label="Contents">
 			<h2>Contents</h2>
 			<ol>
-				{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == 'lad' %}{% assign slug = 'index' %}{% endif %}
+				{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == guide.key %}{% assign slug = 'index' %}{% endif %}
 				<li><a href="#page-{{ slug }}">{{ p.title }}</a></li>
 				{% endfor %}
 			</ol>
 		</nav>
 
-		{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == 'lad' %}{% assign slug = 'index' %}{% endif %}
+		{% for p in guide_pages %}{% assign slug = p.url | split: '/' | last | remove: '.html' %}{% if slug == '' or slug == guide.key %}{% assign slug = 'index' %}{% endif %}
 		<article class="chapter" id="page-{{ slug }}" data-page="{{ slug }}">
 			{{ p.content | markdownify }}
 		</article>
@@ -95,7 +96,7 @@
 				ch.querySelectorAll('[id]').forEach(function (el) { el.id = page + '--' + el.id; });
 				ch.querySelectorAll('a[href]').forEach(function (a) {
 					var href = a.getAttribute('href');
-					var m = href.match(/^(?:(?:\/preview)?\/guides\/lad\/)?(?:([\w-]+)\.(?:md|html))?(?:#(.*))?$/);
+					var m = href.match(/^(?:(?:\/preview)?\/guides\/{{ guide.key }}\/)?(?:([\w-]+)\.(?:md|html))?(?:#(.*))?$/);
 					if (!m) return;
 					if (!m[1] && !m[2]) {
 						if (href === '{{ page.guide_root }}') a.setAttribute('href', '#page-index');

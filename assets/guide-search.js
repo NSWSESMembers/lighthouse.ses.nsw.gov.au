@@ -1,4 +1,4 @@
-// Live search for the LAD user guide.
+// Live search for a user guide (any guide using _layouts/guide.html).
 //
 // The index (search.json next to the guide pages) holds each page's HTML. On
 // first use it's split into one entry per heading, so a result links straight

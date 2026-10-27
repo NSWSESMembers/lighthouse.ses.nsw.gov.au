@@ -1,13 +1,21 @@
 ---
 layout: default
 ---
+{% comment %}
+	Every user guide's pages. Which guide comes from the `guide` key that
+	_config.yml's defaults give its folder; its name and source folder from
+	_data/guides.yml.
+{% endcomment %}
+{% assign guide = site.data.guides | where: "key", page.guide | first %}
 {% assign guide_pages = site.pages | where: "guide_root", page.guide_root | where_exp: "p", "p.nav_order" | sort: "nav_order" %}
-{% assign source_path = page.path | remove_first: "preview/" | remove_first: "guides/lad/" %}
-{% assign stamp = site.data[page.lad_guide_data] %}
+{% assign guide_prefix = "guides/" | append: guide.key | append: "/" %}
+{% assign source_path = page.path | remove_first: "preview/" | remove_first: guide_prefix %}
+{% assign stamp = site.data[page.stamp_data] %}
+{% assign copy_prefix = page.site_root | append: "/guides/" %}
 <div class="container with-sidebar">
 	<aside class="sidebar">
 		<form class="guide-search" role="search" data-index="{{ page.guide_root }}search.json">
-			<label class="visually-hidden" for="guide-search-input">Search the LAD guide</label>
+			<label class="visually-hidden" for="guide-search-input">Search the {{ guide.name }}</label>
 			<input id="guide-search-input" type="search" placeholder="Search the guide" autocomplete="off" spellcheck="false"
 				role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="guide-search-results">
 			<kbd class="guide-search-key" aria-hidden="true">/</kbd>
@@ -15,8 +23,8 @@ layout: default
 			<ol class="guide-search-results" id="guide-search-results" role="listbox" aria-label="Search results"></ol>
 		</form>
 		<details open>
-			<summary>LAD User Guide contents</summary>
-			<h2>LAD User Guide</h2>
+			<summary>{{ guide.name }} contents</summary>
+			<h2>{{ guide.name }}</h2>
 			<ol>
 				{% for p in guide_pages %}
 				<li><a href="{{ p.url | relative_url }}"{% if p.url == page.url %} class="current" aria-current="page"{% endif %}>{{ p.title }}</a>
@@ -40,6 +48,15 @@ layout: default
 				<p>Using Lighthouse Development Preview? <a href="/preview{{ page.url }}">Read the preview guide</a></p>
 				{% endif %}{% endunless %}
 			</div>
+			{% comment %} The other guides in this copy (stable or preview) that have pages here. {% endcomment %}
+			{% capture other_guides %}{% for g in site.data.guides %}{% if g.key != guide.key %}{% assign g_root = copy_prefix | append: g.key | append: "/" %}{% assign g_pages = site.pages | where: "guide_root", g_root | where_exp: "p", "p.nav_order" %}{% if g_pages.size > 0 %}<li><a href="{{ g_root }}">{{ g.title }}</a></li>{% endif %}{% endif %}{% endfor %}{% endcapture %}
+			{% if other_guides != "" %}
+			<div class="sidebar-extra sidebar-guides">
+				<h2>Other guides</h2>
+				<ul>{{ other_guides }}</ul>
+				<p><a href="/guides.html">All user guides</a></p>
+			</div>
+			{% endif %}
 		</details>
 	</aside>
 
@@ -53,11 +70,11 @@ layout: default
 				{% assign prev_i = forloop.index0 | minus: 1 %}
 				{% assign next_i = forloop.index0 | plus: 1 %}
 				<span>{% if prev_i >= 0 %}<a href="{{ guide_pages[prev_i].url | relative_url }}">← {{ guide_pages[prev_i].title }}</a>{% endif %}</span>
-				<a class="edit" href="https://github.com/NSWSESMembers/Lighthouse/edit/master-dev/docs/lad/{{ source_path }}">Suggest an edit</a>
+				<a class="edit" href="https://github.com/NSWSESMembers/Lighthouse/edit/master-dev/docs/{{ guide.key }}/{{ source_path }}">Suggest an edit</a>
 				<span>{% if guide_pages[next_i] %}<a href="{{ guide_pages[next_i].url | relative_url }}">{{ guide_pages[next_i].title }} →</a>{% endif %}</span>
 			{% endif %}{% endfor %}
 		</nav>
 	</article>
 </div>
 {% include sidebar-script.html %}
-<script src="/assets/lad-search.js" defer></script>
+<script src="/assets/guide-search.js" defer></script>
