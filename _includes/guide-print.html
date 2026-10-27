@@ -11,7 +11,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>{{ guide.name }}{% if page.preview %} (Dev Preview){% endif %} (print) · Lighthouse</title>
-	{% if page.preview %}<meta name="robots" content="noindex">{% endif %}
+	{% if page.preview or guide_pages.size == 0 %}<meta name="robots" content="noindex">{% endif %}
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" type="text/css">
 	<link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -58,11 +58,23 @@
 </head>
 <body>
 	<div class="print-bar">
+		{% if guide_pages.size > 0 %}
 		<span><a href="{{ page.guide_root }}">← Back to the guide</a></span>
 		<button type="button" onclick="window.print()">Print / Save as PDF</button>
+		{% else %}
+		<span><a href="/guides.html">← All user guides</a></span>
+		{% endif %}
 	</div>
 
 	<main class="doc">
+		{% if guide_pages.size == 0 %}
+		{% comment %} The stub is here before the guide's pages are synced (see _data/guides.yml). {% endcomment %}
+		<section class="cover">
+			<h1>{{ guide.title }}</h1>
+			<p>This guide hasn't been published here yet.</p>
+			<p><a href="/guides.html">See all user guides</a></p>
+		</section>
+		{% else %}
 		<section class="cover">
 			{% if guide.logo %}<img src="{{ page.guide_root }}{{ guide.logo }}" alt="">{% endif %}
 			<h1>{{ guide.title }}</h1>
@@ -85,6 +97,7 @@
 			{{ p.content | markdownify }}
 		</article>
 		{% endfor %}
+		{% endif %}
 	</main>
 
 	<script>
