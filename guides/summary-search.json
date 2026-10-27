@@ -1,0 +1,8 @@
+---
+layout: null
+permalink: /guides/summary/search.json
+# Lives outside guides/summary/ because the Lighthouse sync replaces that folder.
+guide: summary
+guide_root: /guides/summary/
+---
+{% include guide-search-index.json %}

@@ -24,3 +24,8 @@
   title: Incident Statistics
   description: Charts of an HQ's incidents over a period, by type, place, tags and time to complete. Click any chart to filter the rest.
   icon: chart
+- key: summary
+  name: Incident Summary Guide
+  title: Incident Summary
+  description: An HQ's incident counts by status and type in big numbers for a screen on the wall, refreshed every 30 seconds, with a sound for new incidents.
+  icon: tiles
