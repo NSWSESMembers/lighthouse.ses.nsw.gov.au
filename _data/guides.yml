@@ -1,0 +1,26 @@
+# The user guides, in the order the Guides page lists them.
+#
+# Each guide is a folder of Markdown in NSWSESMembers/Lighthouse, docs/<key>/,
+# synced to guides/<key>/ from master and preview/guides/<key>/ from
+# master-dev. Adding a guide:
+#   1. an entry here;
+#   2. its guides/<key> and preview/guides/<key> defaults in _config.yml;
+#   3. its search and print stubs: guides/<key>-search.json,
+#      guides/<key>-print.html, preview/<key>-search.json, preview/<key>-print.html.
+# The Guides page only shows a guide once its pages have been synced here.
+#
+#   name:  the guide's name in the sidebar, search box and print view
+#   title: the card heading and the print cover
+#   logo:  optional cover image for the print view, relative to the guide folder
+#   icon:  the card's icon (see guides.html)
+- key: lad
+  name: LAD User Guide
+  title: Lighthouse Aided Dispatch (LAD)
+  description: Configure LAD, work the team and incident registers, task teams, handle ICEMS messages and use the situation map.
+  logo: images/lad-logo.png
+  icon: map
+- key: stats
+  name: Incident Statistics Guide
+  title: Incident Statistics
+  description: Charts of an HQ's incidents over a period, by type, place, tags and time to complete. Click any chart to filter the rest.
+  icon: chart

@@ -2,7 +2,8 @@
 layout: null
 permalink: /preview/guides/lad/search.json
 # Lives outside preview/guides/lad/ because the Lighthouse sync replaces that folder.
+guide: lad
 guide_root: /preview/guides/lad/
 preview: true
 ---
-{% include lad-search-index.json %}
+{% include guide-search-index.json %}

@@ -1,8 +1,8 @@
 {% comment %}
-	Search index for the LAD guide: every guide page rendered to HTML, the same
-	way lad-print.html does it. assets/lad-search.js splits the pages into
-	sections by heading in the browser. Included by guides/lad-search.json
-	(stable) and preview/lad-search.json (Development Preview).
+	Search index for one guide (page.guide_root): every page rendered to HTML,
+	the same way guide-print.html does it. assets/guide-search.js splits the
+	pages into sections by heading in the browser. Included by each guide's
+	guides/<key>-search.json (stable) and preview/<key>-search.json stubs.
 {% endcomment %}{% assign guide_pages = site.pages | where: "guide_root", page.guide_root | where_exp: "p", "p.nav_order" | sort: "nav_order" %}[{% for p in guide_pages %}
 {"url":{{ p.url | relative_url | jsonify }},"title":{{ p.title | jsonify }},"html":{{ p.content | markdownify | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}
 ]

@@ -28,23 +28,36 @@ plugins:
 relative_links:
   enabled: true
 
-# guides/lad/ and whats-new/ are synced from docs/ in NSWSESMembers/Lighthouse,
+# guides/<key>/ and whats-new/ are synced from docs/ in NSWSESMembers/Lighthouse,
 # so their layouts are set here rather than in each file's front matter.
 # The stable copies come from master (what users of the Chrome Web Store
 # release have). The preview/ copies come from master-dev, for users of
-# Lighthouse Development Preview.
+# Lighthouse Development Preview. Each guide in _data/guides.yml has a stable
+# and a preview entry below.
+#   guide:      the guide's key in _data/guides.yml
 #   guide_root: the guide's base URL; layouts use it to list only that copy's pages
 #   site_root:  prefix for links to the matching What's New / guide copy
-#   lad_guide_data: which _data file holds the "Written for Lighthouse ..." stamp
+#   stamp_data: which _data file holds the "Written for Lighthouse ..." stamp
+#               (one per copy: every guide is synced from the same commit)
 defaults:
   - scope:
       path: "guides/lad"
     values:
-      layout: lad
+      layout: guide
+      guide: lad
       title_suffix: LAD User Guide
       guide_root: /guides/lad/
       site_root: ""
-      lad_guide_data: lad_guide
+      stamp_data: lad_guide
+  - scope:
+      path: "guides/stats"
+    values:
+      layout: guide
+      guide: stats
+      title_suffix: Incident Statistics Guide
+      guide_root: /guides/stats/
+      site_root: ""
+      stamp_data: lad_guide
   - scope:
       path: "whats-new"
     values:
@@ -53,11 +66,22 @@ defaults:
   - scope:
       path: "preview/guides/lad"
     values:
-      layout: lad
+      layout: guide
+      guide: lad
       title_suffix: LAD User Guide (Dev Preview)
       guide_root: /preview/guides/lad/
       site_root: /preview
-      lad_guide_data: lad_guide_preview
+      stamp_data: lad_guide_preview
+      preview: true
+  - scope:
+      path: "preview/guides/stats"
+    values:
+      layout: guide
+      guide: stats
+      title_suffix: Incident Statistics Guide (Dev Preview)
+      guide_root: /preview/guides/stats/
+      site_root: /preview
+      stamp_data: lad_guide_preview
       preview: true
   - scope:
       path: "preview/whats-new"
