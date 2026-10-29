@@ -28,7 +28,7 @@ plugins:
 relative_links:
   enabled: true
 
-# guides/<key>/ and whats-new/ are synced from docs/ in NSWSESMembers/Lighthouse,
+# guides/<key>/, whats-new/ and privacy/ are synced from docs/ in NSWSESMembers/Lighthouse,
 # so their layouts are set here rather than in each file's front matter.
 # The stable copies come from master (what users of the Chrome Web Store
 # release have). The preview/ copies come from master-dev, for users of
@@ -91,6 +91,11 @@ defaults:
       layout: whats-new
       site_root: ""
   - scope:
+      path: "privacy"
+    values:
+      layout: page
+      site_root: ""
+  - scope:
       path: "preview/guides/lad"
     values:
       layout: guide
@@ -144,5 +149,11 @@ defaults:
       path: "preview/whats-new"
     values:
       layout: whats-new
+      site_root: /preview
+      preview: true
+  - scope:
+      path: "preview/privacy"
+    values:
+      layout: page
       site_root: /preview
       preview: true
