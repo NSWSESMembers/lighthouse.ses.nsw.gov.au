@@ -18,6 +18,22 @@ section of the LAD guide with a full /preview/guides/lad/... URL.
 The home page shows the first three `##` entries, so keep the title short.
 -->
 
+## LAD settings for each Beacon
+
+*9 November 2026*
+
+- **LAD always loads at least one headquarters on Production Beacon.** An empty Teams or Incidents filter, including after **Clear**, now uses your Beacon focus unit instead of loading every unit. Train and Dev Beacon can still load all units. See [Clearing Headquarters](/preview/guides/lad/configuration.html#clearing-headquarters).
+- **Each Beacon keeps its own LAD Configuration.** Changes on Train or Dev Beacon no longer carry over to Production Beacon, or the other way around. Train and Dev go back to the default settings the first time you open them after this update.
+
+## Terrain and historical imagery in LAD
+
+*9 November 2026*
+
+- **New Elevation overlay.** Colours the ground by height across NSW, so low ground and floodplains stand out on the map. Find it under **Terrain** in the **Layers** menu. Heights are indicative. See [Overlay Notes](/preview/guides/lad/situation-map.html#overlay-notes).
+- **New Hillshade and Steepness overlays**, also under **Terrain**, show the shape of the land and how steep it is.
+- **New Historical Imagery section.** Aerial photos of floods from 2012 to 2022 in the places where they were taken, including Lismore, Grafton, Forbes and the Hawkesbury-Nepean.
+- **A shorter Layers menu.** Layers are now grouped by what they show, in fewer sections, listed alphabetically with an icon each: **Forecasts**, **Historical Imagery**, **Infrastructure**, **NSW SES Geoservices**, **Radar & Observations**, **Terrain** and **Warnings**. **Visibility** is now called **Markers** and sits just below **Basemap**. Your layers and presets are unchanged.
+
 ## Lighter LAD refreshes
 
 *7 November 2026*
@@ -25,6 +41,30 @@ The home page shows the first three `##` entries, so keep the title short.
 - **The full refresh now defaults to 10 minutes.** With Live Updates on, changes already arrive as they happen, so LAD doesn't need to reload as often. If you were on the old 3-minute default you move to 10 minutes, and any other value you picked stays as it was. See [Full Refresh Interval](/preview/guides/lad/configuration.html#full-refresh-interval).
 - **Clearer wording with Live Updates off.** The Configuration screen now says what happens: LAD reloads every minute, and expanding an incident or team refreshes it.
 - **Tasking keeps up with the full refresh.** It could skip every second refresh, and with Live Updates off it followed the Full Refresh setting instead of reloading every minute.
+
+## Live Updates catch up after a dropout
+
+*7 November 2026*
+
+- **LAD catches up when Live Updates reconnect.** Changes made in Beacon while the connection was down used to be missing until the next full refresh. LAD now reloads incidents, teams and tasking as soon as it reconnects. See [Live Updates](/preview/guides/lad/configuration.html#live-updates).
+
+## Forgotten LAD tabs pause
+
+*7 November 2026*
+
+- **LAD pauses after 30 minutes in the background.** A forgotten tab stops calling Beacon. When you go back to it, it asks you to reload, because what's on screen is out of date. If its Beacon login has expired too, it asks you to open LAD again from Beacon's Lighthouse menu first. See [Background Tabs](/preview/guides/lad/configuration/#background-tabs).
+
+## Tasking in large events
+
+*7 November 2026*
+
+- **Tasking keeps refreshing in large events.** With more than about 180 incidents showing, the regular tasking refresh could fail without any message, leaving the teams shown on incidents out of date or missing. LAD now splits large refreshes into several smaller requests.
+
+## Deleted teams hidden in LAD
+
+*6 November 2026*
+
+- **A team deleted in Beacon now disappears from LAD** without a page reload, whatever your team filters are set to. Taskings it had on an incident still show its callsign, and it comes back if the team is restored.
 
 ## New Statistics, Summary and Export pages
 
