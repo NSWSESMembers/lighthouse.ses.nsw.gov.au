@@ -18,6 +18,28 @@ section of the LAD guide with a full /preview/guides/lad/... URL.
 The home page shows the first three `##` entries, so keep the title short.
 -->
 
+## LAD on phones
+
+*11 November 2026*
+
+- **Team callsigns stay visible on narrow screens.** On a phone, the callsign column in the [Team Register](/preview/guides/lad/team-register.html) had been squeezed to nothing. It now keeps its space, and long callsigns wrap. When the list is narrow, the task count is just the number (**2** rather than **2 Active**), the status is shortened (**Act**, **Stby**, **Alert**, **Rest**, **Down**; hover for the full name) and the team's action buttons move into a **⋮** menu.
+- **The Incident Register fits on a phone.** It no longer runs off the side of the screen. When the list is narrow, the received time and date sit under the incident number, and the status is shortened (**Act (0)**, **Tskd**, **Ack**, **Ref**, **Comp**, **Fin**, **Canc**, **Rej**; hover for the full name). See the [Incident Register](/preview/guides/lad/incident-register.html).
+- **Members beside Team Capabilities.** On a phone or an iPad in portrait, an expanded team shows Members next to Team Capabilities. Collapsing Team Capabilities puts Members next to Matched Assets instead.
+- **The Configuration screen and Trackable Assets Library work on a phone.** Both open full screen and fit without scrolling sideways. In the Configuration screen the sections are one row you swipe along. In the library, each asset's details sit under its callsign, and on an iPad in portrait the library uses the full width.
+
+## Team capabilities in LAD
+
+*10 November 2026*
+
+- **See what a team can do at a glance.** Expanding a team in the Team Register now shows a [Team Capabilities](/preview/guides/lad/team-register.html#team-capabilities) box counting how many members hold each capability. Each member counts at their highest level, so a count such as **Storm Ground only** leaves out anyone with Storm Heights.
+- **Members column in the Team Register.** The Team Leader column is now Members and shows the team leader and how many others are on the team, such as Alex Nguyen + 4.
+
+## Non-Incident Task Card hours
+
+*10 November 2026*
+
+- **Summed hours are back on Non-Incident Task Cards.** The total of all participants' hours shows beside the duration at the top of a task card again. It had stopped appearing after a change to Beacon's page layout.
+
 ## Closer map zoom in LAD
 
 *9 November 2026*
