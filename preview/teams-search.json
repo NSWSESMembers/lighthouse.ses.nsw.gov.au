@@ -1,0 +1,9 @@
+---
+layout: null
+permalink: /preview/guides/teams/search.json
+# Lives outside preview/guides/teams/ because the Lighthouse sync replaces that folder.
+guide: teams
+guide_root: /preview/guides/teams/
+preview: true
+---
+{% include guide-search-index.json %}
