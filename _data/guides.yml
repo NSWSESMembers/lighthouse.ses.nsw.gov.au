@@ -39,3 +39,8 @@
   title: NITC Export
   description: Download Non-Incident Task Cards as a CSV, as a list of tasks with who took part or a list of members with their hours per tag.
   icon: clipboard
+- key: teams
+  name: Team Summary Guide
+  title: Team Summary
+  description: A card for each of an HQ's teams, with status, members, resources, location and recent history, for a screen on the wall. Refreshed every 3 minutes.
+  icon: users
